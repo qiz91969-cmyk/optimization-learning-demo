@@ -1,0 +1,9 @@
+{
+  "sample_id": "transportation",
+  "title_zh": "两仓库向五个销售点配送商品",
+  "description_en": "A brewery distributes crates of beer from warehouses A and B to five bars B1,B2,B3,B4,B5. Available supplies are [1000,4000] crates in warehouse order. Minimum demands are [500,900,1800,200,700] crates in bar order. Per-crate shipping costs, rows A,B and columns B1 to B5, are [[2,4,5,2,1],[3,1,3,2,3]]. Shipments are nonnegative integer crates. Outgoing shipments cannot exceed warehouse supply. Each bar must receive at least its demand. Unused stock can remain in a warehouse at no additional cost. Minimize total shipping cost. There are no vehicle-route or scheduling decisions.",
+  "description_zh": "两仓库库存1000、4000箱，五个销售点最低需求为500、900、1800、200、700箱。根据2行5列运费表决定每条仓库—销售点线路配送多少箱，使总费用最小。库存可以剩余，不涉及车辆路径。",
+  "entity_order": ["A", "B"],
+  "modeling_notes_en": "This statement paraphrases the base PuLP example. No dummy destination or extra supply is added. Destinations are B1,B2,B3,B4,B5. Keep warehouse order. Quantity unit: crates. Objective unit: dollars. Shipment variables are integer.",
+  "source": {"dataset": "COIN-OR PuLP case study", "record_id": "BeerDistributionProblem_base", "split": "tutorial", "usage": "demo_development_not_unseen_test", "version": "page consulted 2026-09-19; base numbers preserved in this record", "url": "https://coin-or.github.io/pulp/CaseStudies/a_transportation_problem.html", "derivation": "English and Chinese paraphrase of tutorial facts; no PuLP implementation copied", "license": "See upstream documentation terms and THIRD_PARTY_NOTICES.md; downstream redistribution review pending"}
+}

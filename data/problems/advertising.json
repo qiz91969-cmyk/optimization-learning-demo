@@ -1,0 +1,11 @@
+{
+  "problem_type": "linear", "objective": "maximize",
+  "entities": ["radio_ads", "social_ads"],
+  "units": {"quantity": "ads", "objective": "viewers"},
+  "parameters": {
+    "objective_coefficients": [60500,50000],
+    "constraints": [{"name":"budget","coefficients":[5000,9150],"sense":"<=","rhs":250000,"unit":"dollars"}],
+    "lower_bounds":[15,35], "upper_bounds":[40,null], "variable_type":"integer"
+  },
+  "missing_information": []
+}

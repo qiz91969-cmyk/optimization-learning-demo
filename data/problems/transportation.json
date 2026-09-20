@@ -1,0 +1,7 @@
+{
+  "problem_type": "transportation", "objective": "minimize",
+  "entities": ["A","B"],
+  "units": {"quantity": "crates", "objective": "dollars"},
+  "parameters": {"destinations":["B1","B2","B3","B4","B5"],"supply":[1000,4000],"demand":[500,900,1800,200,700],"cost_matrix":[[2,4,5,2,1],[3,1,3,2,3]],"variable_type":"integer"},
+  "missing_information": []
+}

@@ -1,0 +1,11 @@
+{
+  "problem_type": "linear", "objective": "maximize",
+  "entities": ["color_printers", "black_white_printers"],
+  "units": {"quantity": "printers", "objective": "dollars"},
+  "parameters": {
+    "objective_coefficients": [200,70],
+    "constraints": [{"name":"shared_capacity","coefficients":[1,1],"sense":"<=","rhs":35,"unit":"printers/day"}],
+    "lower_bounds":[0,0], "upper_bounds":[20,30], "variable_type":"integer"
+  },
+  "missing_information": []
+}

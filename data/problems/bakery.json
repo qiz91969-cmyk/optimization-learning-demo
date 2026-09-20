@@ -1,0 +1,14 @@
+{
+  "problem_type": "linear", "objective": "maximize",
+  "entities": ["bread", "cookie_batches"],
+  "units": {"quantity": "product_units", "objective": "dollars"},
+  "parameters": {
+    "objective_coefficients": [5,3],
+    "constraints": [
+      {"name":"mixer","coefficients":[1,0.5],"sense":"<=","rhs":3000,"unit":"hours/year"},
+      {"name":"oven","coefficients":[3,1],"sense":"<=","rhs":3000,"unit":"hours/year"}
+    ],
+    "lower_bounds":[0,0], "upper_bounds":[null,null], "variable_type":"integer"
+  },
+  "missing_information": []
+}

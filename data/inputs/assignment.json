@@ -1,0 +1,9 @@
+{
+  "sample_id": "assignment",
+  "title_zh": "五名工人与四项工作的成本分配",
+  "description_en": "Assign four civilian workshop tasks T0,T1,T2,T3 to five workers W0,W1,W2,W3,W4. Each task must be assigned to exactly one worker. Each worker can perform at most one task; one worker may remain idle. The cost matrix, with rows W0 to W4 and columns T0 to T3, is [[90,80,75,70],[35,85,55,65],[125,95,90,95],[45,110,95,115],[50,100,90,100]]. Minimize total assignment cost.",
+  "description_zh": "五名工人承接四项工作，每项工作恰好一人，每人至多一项，允许有人闲置。根据5行4列的成本表，求总成本最小的分配。",
+  "entity_order": ["W0", "W1", "W2", "W3", "W4"],
+  "modeling_notes_en": "This English statement is a demo paraphrase of the official tutorial, not a quoted benchmark record. Assignments are binary. Keep task identifiers T0,T1,T2,T3 and worker order. Quantity unit: assignments. Objective unit: cost_units.",
+  "source": {"dataset": "Google OR-Tools assignment tutorial", "record_id": "five_workers_four_tasks", "split": "tutorial", "usage": "demo_development_not_unseen_test", "version": "page consulted 2026-09-19; matrix preserved in this record", "url": "https://developers.google.com/optimization/assignment/assignment_example", "derivation": "Paraphrase with the tutorial cost matrix; no OR-Tools implementation copied", "license": "Google Developers content CC BY 4.0, code Apache 2.0; attribution retained; see THIRD_PARTY_NOTICES.md"}
+}

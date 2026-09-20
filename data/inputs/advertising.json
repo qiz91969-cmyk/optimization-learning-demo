@@ -1,0 +1,9 @@
+{
+  "sample_id": "advertising",
+  "title_zh": "广告预算与最低投放要求",
+  "description_en": "A cleaning company located in Edmonton wants to get the best exposure possible for promoting their new dishwashing detergent without exceeding their $250,000 advertising budget. To do so, the company decides to spend their money on two forms of advertising: (1) radio ads and (2) social media ads. Each radio ad costs $5,000; each social media ad costs $9,150. The expected exposure, based on industry ratings, is 60,500 viewers for each radio ad. Additionally, the expected exposure for each social media ad is 50,000 viewers. The company decides that at least 15 but no more than 40 radio ads should be ordered, and that at least 35 social media ads should be contracted. How many ads of each type should be run to obtain maximum exposure while staying within the budget?",
+  "description_zh": "预算250000，广播广告每次5000，社交广告每次9150；覆盖人数60500和50000。广播次数在15至40之间，社交广告至少35次。求预算内的最大覆盖人数。",
+  "entity_order": ["radio_ads", "social_ads"],
+  "modeling_notes_en": "In this demo ad counts are nonnegative integers, an explicit counting interpretation. Preserve all original conditions even if no feasible solution exists. Keep the given entity order. Quantity unit: ads. Objective unit: viewers. Budget constraint unit: dollars; count constraints: ads.",
+  "source": {"dataset": "NL4Opt", "record_id": "-725478241", "split": "test", "usage": "demo_development_not_unseen_test", "version": "49f1e0d66b7fdcd33305a7f281c2a7c13f5620ea", "url": "https://github.com/nl4opt/nl4opt-competition/blob/49f1e0d66b7fdcd33305a7f281c2a7c13f5620ea/generation_data/test.jsonl", "derivation": "English document copied; Chinese explanation and integer interpretation added", "license": "repository MIT; see THIRD_PARTY_NOTICES.md"}
+}
