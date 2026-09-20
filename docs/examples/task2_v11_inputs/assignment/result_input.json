@@ -1,0 +1,98 @@
+{
+  "problem": {
+    "problem_type": "assignment",
+    "objective": "minimize",
+    "entities": [
+      "W0",
+      "W1",
+      "W2",
+      "W3",
+      "W4"
+    ],
+    "units": {
+      "quantity": "assignments",
+      "objective": "cost_units"
+    },
+    "parameters": {
+      "tasks": [
+        "T0",
+        "T1",
+        "T2",
+        "T3"
+      ],
+      "cost_matrix": [
+        [
+          90,
+          80,
+          75,
+          70
+        ],
+        [
+          35,
+          85,
+          55,
+          65
+        ],
+        [
+          125,
+          95,
+          90,
+          95
+        ],
+        [
+          45,
+          110,
+          95,
+          115
+        ],
+        [
+          50,
+          100,
+          90,
+          100
+        ]
+      ]
+    },
+    "missing_information": []
+  },
+  "actual_return": {
+    "status": "optimal",
+    "values": [
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "objective_value": 265.0,
+    "feasible_solution_present": true,
+    "optimality_proven": true,
+    "backend": "scipy.optimize.linear_sum_assignment/modified Jonker-Volgenant",
+    "tool_version": "1.0",
+    "message": "Each task exactly once; each worker at most once",
+    "elapsed_seconds": 0.0001
+  },
+  "status_definitions": {
+    "optimal": "report_solution",
+    "infeasible": "review_constraints",
+    "unbounded": "review_bounds",
+    "limit_reached": "consider_more_time",
+    "solver_timeout": "consider_more_time",
+    "solver_error": "inspect_tool_error"
+  }
+}

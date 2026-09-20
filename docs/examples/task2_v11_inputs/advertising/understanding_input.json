@@ -1,0 +1,34 @@
+{
+  "task_text": "A cleaning company located in Edmonton wants to get the best exposure possible for promoting their new dishwashing detergent without exceeding their $250,000 advertising budget. To do so, the company decides to spend their money on two forms of advertising: (1) radio ads and (2) social media ads. Each radio ad costs $5,000; each social media ad costs $9,150. The expected exposure, based on industry ratings, is 60,500 viewers for each radio ad. Additionally, the expected exposure for each social media ad is 50,000 viewers. The company decides that at least 15 but no more than 40 radio ads should be ordered, and that at least 35 social media ads should be contracted. How many ads of each type should be run to obtain maximum exposure while staying within the budget?",
+  "supplement": "In this demo ad counts are nonnegative integers, an explicit counting interpretation. Preserve all original conditions even if no feasible solution exists. Keep the given entity order. Quantity unit: ads. Objective unit: viewers. Budget constraint unit: dollars; count constraints: ads.",
+  "entity_order": [
+    "radio_ads",
+    "social_ads"
+  ],
+  "field_contract": {
+    "empty_output": {
+      "problem_type": "",
+      "objective": "",
+      "entities": [],
+      "units": {
+        "quantity": "",
+        "objective": ""
+      },
+      "parameters": {
+        "objective_coefficients": [],
+        "constraints": [],
+        "lower_bounds": [],
+        "upper_bounds": [],
+        "variable_type": ""
+      },
+      "missing_information": []
+    },
+    "rules": [
+      "problem_type: assignment for workers/tasks, otherwise linear for production/advertising.",
+      "objective: minimize or maximize; entities are identifier strings.",
+      "Assignment: tasks are identifiers; cost_matrix rows follow entities and columns follow tasks.",
+      "Linear: each constraint is {name: string, coefficients: number array, sense: <= or >= or =, rhs: number, unit: string}.",
+      "Linear: all vectors follow entities; use null for an absent upper bound; variable_type is integer or continuous."
+    ]
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "problem": {
+    "problem_type": "linear",
+    "objective": "maximize",
+    "entities": [
+      "color_printers",
+      "black_white_printers"
+    ],
+    "units": {
+      "quantity": "printers",
+      "objective": "dollars"
+    },
+    "parameters": {
+      "objective_coefficients": [
+        200,
+        70
+      ],
+      "constraints": [
+        {
+          "name": "shared_capacity",
+          "coefficients": [
+            1,
+            1
+          ],
+          "sense": "<=",
+          "rhs": 35,
+          "unit": "printers/day"
+        }
+      ],
+      "lower_bounds": [
+        0,
+        0
+      ],
+      "upper_bounds": [
+        20,
+        30
+      ],
+      "variable_type": "integer"
+    },
+    "missing_information": []
+  },
+  "selected_method": "highs_milp",
+  "context": {
+    "context_version": "1.1",
+    "method": {
+      "method_id": "highs_milp",
+      "version": "1.0",
+      "name": "HiGHS mixed integer linear programming through SciPy",
+      "condition_ids": [
+        "linear_objective_constraints",
+        "integer_decisions"
+      ],
+      "conditions": "Linear objective and constraints, finite input coefficients, integer decisions; binary one-to-one assignment also has this formulation. Infeasibility does not make the method inapplicable."
+    },
+    "tool_name": "solve_linear",
+    "tool_version": "1.0",
+    "arguments_fields": [
+      "objective",
+      "entities",
+      "units",
+      "parameters"
+    ],
+    "argument_rules": "Copy these four fields from problem exactly. objective is a string; entities is an array; units and parameters are objects. No problem_type or missing_information inside arguments.",
+    "ordering": "Preserve entities order; matrix columns follow tasks; output values are row-major.",
+    "limits": {
+      "solver_seconds": 10,
+      "process_seconds": 20
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "version": "1.1",
+  "templates": {
+    "understanding": {
+      "category": "problem_understanding", "form": null,
+      "input_fields": ["task_text", "supplement", "entity_order", "field_contract"],
+      "target": "problem", "validator": "problem_reference_alignment",
+      "instruction": "Extract the optimization problem. Return only a JSON object using the exact keys in field_contract.empty_output. Replace empty fields using the statement and supplement. Read field_contract.rules. Keep entity_order. objective is a STRING: minimize or maximize. Always include missing_information (empty array when nothing is missing). No code, no extra keys."
+    },
+    "method": {
+      "category": "method_selection", "form": null,
+      "input_fields": ["problem", "scenario", "requirements", "candidates"],
+      "target": "acceptable_methods", "validator": "method_conditions",
+      "instruction": "Choose one applicable method from candidates. Return {\"method_id\": string, \"condition_ids\": [string], \"explanation\": string}. Use exact method and condition identifiers from the selected card. Briefly explain applicability, not performance superiority."
+    },
+    "call": {
+      "category": "tool_use", "form": "call_construction",
+      "input_fields": ["problem", "selected_method", "context"],
+      "target": "reference_call", "validator": "interface_and_execution",
+      "instruction": "Build a tool call from problem and context. Return exactly {\"tool_name\": string, \"arguments\": {\"objective\": string, \"entities\": array, \"units\": object, \"parameters\": object}}. Copy the problem parameters without changing their meaning or order. Use context.tool_name. If required information is missing, return only {\"missing_fields\": [string]} instead. Do not compute an answer or generate Python."
+    },
+    "result": {
+      "category": "tool_use", "form": "return_interpretation",
+      "input_fields": ["problem", "actual_return", "status_definitions"],
+      "target": "result_interpretation", "validator": "return_and_recomputation",
+      "instruction": "Interpret actual_return, not an imagined solution. Return exactly {\"status\": string, \"objective_value\": number or null, \"values\": array or null, \"optimality_proven\": boolean, \"next_action\": string, \"explanation\": string}. Preserve its status, objective_value and values. Choose next_action from status_definitions. Only optimal means optimality_proven=true. For infeasible do not invent a solution. Explain briefly."
+    }
+  },
+  "roles": {"input": "model-visible whitelist", "process": "mapping/condition/argument operations, not private chain-of-thought", "target": "offline reference only", "evidence": "source and independent verification; not inserted into prompts"}
+}

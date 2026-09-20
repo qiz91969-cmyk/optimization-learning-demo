@@ -1,0 +1,34 @@
+{
+  "task_text": "An office supply company makes two types of printers: color printers and black and white printers. Different sections of the factory with different teams produce each printer. The color printer team can produce at most 20 color printers per day while the black and white printer team can produce at most 30 black and white printers per day. Both teams require use of the same paper tray installing machine and this machine can make at most 35 printers of either type each day. Color printers generate a profit of $200 per printer while black and white printers generate a profit of $70 per printer. How many of each printer should be made to maximize the company's profit?",
+  "supplement": "In this demo printer counts are nonnegative integers. This is an explicit interpretation of indivisible products, not an integer label claimed from NL4Opt. Keep the given entity order. Quantity unit: printers. Objective unit: dollars. Constraint units: printers/day.",
+  "entity_order": [
+    "color_printers",
+    "black_white_printers"
+  ],
+  "field_contract": {
+    "empty_output": {
+      "problem_type": "",
+      "objective": "",
+      "entities": [],
+      "units": {
+        "quantity": "",
+        "objective": ""
+      },
+      "parameters": {
+        "objective_coefficients": [],
+        "constraints": [],
+        "lower_bounds": [],
+        "upper_bounds": [],
+        "variable_type": ""
+      },
+      "missing_information": []
+    },
+    "rules": [
+      "problem_type: assignment for workers/tasks, otherwise linear for production/advertising.",
+      "objective: minimize or maximize; entities are identifier strings.",
+      "Assignment: tasks are identifiers; cost_matrix rows follow entities and columns follow tasks.",
+      "Linear: each constraint is {name: string, coefficients: number array, sense: <= or >= or =, rhs: number, unit: string}.",
+      "Linear: all vectors follow entities; use null for an absent upper bound; variable_type is integer or continuous."
+    ]
+  }
+}

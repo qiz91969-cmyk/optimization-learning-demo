@@ -1,0 +1,61 @@
+{
+  "problem": {
+    "problem_type": "linear",
+    "objective": "maximize",
+    "entities": [
+      "radio_ads",
+      "social_ads"
+    ],
+    "units": {
+      "quantity": "ads",
+      "objective": "viewers"
+    },
+    "parameters": {
+      "objective_coefficients": [
+        60500,
+        50000
+      ],
+      "constraints": [
+        {
+          "name": "budget",
+          "coefficients": [
+            5000,
+            9150
+          ],
+          "sense": "<=",
+          "rhs": 250000,
+          "unit": "dollars"
+        }
+      ],
+      "lower_bounds": [
+        15,
+        35
+      ],
+      "upper_bounds": [
+        40,
+        null
+      ],
+      "variable_type": "integer"
+    },
+    "missing_information": []
+  },
+  "actual_return": {
+    "status": "infeasible",
+    "values": null,
+    "objective_value": null,
+    "feasible_solution_present": false,
+    "optimality_proven": false,
+    "backend": "scipy.optimize.milp/HiGHS",
+    "tool_version": "1.0",
+    "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+    "elapsed_seconds": 0.0018
+  },
+  "status_definitions": {
+    "optimal": "report_solution",
+    "infeasible": "review_constraints",
+    "unbounded": "review_bounds",
+    "limit_reached": "consider_more_time",
+    "solver_timeout": "consider_more_time",
+    "solver_error": "inspect_tool_error"
+  }
+}

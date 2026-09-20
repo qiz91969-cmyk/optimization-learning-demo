@@ -1,0 +1,435 @@
+{
+  "id": "assignment",
+  "version": "task2-handoff-1.0",
+  "unified": {
+    "task_text": "Assign four civilian workshop tasks T0,T1,T2,T3 to five workers W0,W1,W2,W3,W4. Each task must be assigned to exactly one worker. Each worker can perform at most one task; one worker may remain idle. The cost matrix, with rows W0 to W4 and columns T0 to T3, is [[90,80,75,70],[35,85,55,65],[125,95,90,95],[45,110,95,115],[50,100,90,100]]. Minimize total assignment cost.",
+    "supplement": "This English statement is a demo paraphrase of the official tutorial, not a quoted benchmark record. Assignments are binary. Keep task identifiers T0,T1,T2,T3 and worker order. Quantity unit: assignments. Objective unit: cost_units.",
+    "entity_order": [
+      "W0",
+      "W1",
+      "W2",
+      "W3",
+      "W4"
+    ],
+    "problem": {
+      "problem_type": "assignment",
+      "objective": "minimize",
+      "entities": [
+        "W0",
+        "W1",
+        "W2",
+        "W3",
+        "W4"
+      ],
+      "units": {
+        "quantity": "assignments",
+        "objective": "cost_units"
+      },
+      "parameters": {
+        "tasks": [
+          "T0",
+          "T1",
+          "T2",
+          "T3"
+        ],
+        "cost_matrix": [
+          [
+            90,
+            80,
+            75,
+            70
+          ],
+          [
+            35,
+            85,
+            55,
+            65
+          ],
+          [
+            125,
+            95,
+            90,
+            95
+          ],
+          [
+            45,
+            110,
+            95,
+            115
+          ],
+          [
+            50,
+            100,
+            90,
+            100
+          ]
+        ]
+      },
+      "missing_information": []
+    },
+    "problem_class": "assignment",
+    "objective": "minimize",
+    "entities": [
+      "W0",
+      "W1",
+      "W2",
+      "W3",
+      "W4"
+    ],
+    "units": {
+      "quantity": "assignments",
+      "objective": "cost_units"
+    },
+    "parameters": {
+      "tasks": [
+        "T0",
+        "T1",
+        "T2",
+        "T3"
+      ],
+      "cost_matrix": [
+        [
+          90,
+          80,
+          75,
+          70
+        ],
+        [
+          35,
+          85,
+          55,
+          65
+        ],
+        [
+          125,
+          95,
+          90,
+          95
+        ],
+        [
+          45,
+          110,
+          95,
+          115
+        ],
+        [
+          50,
+          100,
+          90,
+          100
+        ]
+      ]
+    },
+    "missing_information": [],
+    "method_knowledge": [
+      {
+        "method_id": "assignment_jv",
+        "version": "1.0",
+        "skeleton_id": "linear_assignment",
+        "name": "SciPy rectangular linear assignment (modified Jonker-Volgenant)",
+        "condition_ids": [
+          "assignment_one_to_one",
+          "finite_cost_matrix"
+        ],
+        "conditions": "Minimize a finite rectangular cost matrix; each task exactly once, each worker at most once. Workers fewer than tasks means infeasible under this contract.",
+        "initialization": "Finite matrix with explicit worker/task order",
+        "core_operation": "scipy.optimize.linear_sum_assignment",
+        "stopping": "Library completion or external process timeout",
+        "output": "Row-major binary assignment, objective and termination status",
+        "tool_version": "1.0",
+        "tool_names": {
+          "assignment": "solve_assignment_jv"
+        },
+        "source": "https://docs.scipy.org/doc/scipy-1.16.2/reference/generated/scipy.optimize.linear_sum_assignment.html"
+      },
+      {
+        "method_id": "highs_milp",
+        "version": "1.0",
+        "skeleton_id": "mixed_integer_linear_programming",
+        "name": "HiGHS mixed integer linear programming through SciPy",
+        "condition_ids": [
+          "linear_objective_constraints",
+          "integer_decisions"
+        ],
+        "conditions": "Linear objective and constraints, finite input coefficients, integer decisions; binary one-to-one assignment also has this formulation. Infeasibility does not make the method inapplicable.",
+        "initialization": "Objective vector, constraint matrix, variable bounds and integrality",
+        "core_operation": "scipy.optimize.milp (HiGHS)",
+        "stopping": "Optimality, infeasibility, unboundedness, ten-second solver limit or external timeout",
+        "output": "Values if present and feasible, objective, termination status; feasible does not imply optimal",
+        "tool_version": "1.0",
+        "tool_names": {
+          "assignment": "solve_assignment",
+          "linear": "solve_linear"
+        },
+        "source": "https://docs.scipy.org/doc/scipy-1.16.2/reference/generated/scipy.optimize.milp.html"
+      }
+    ],
+    "algorithm_skeletons": [
+      "linear_assignment",
+      "mixed_integer_linear_programming"
+    ],
+    "tool_contracts": [
+      {
+        "context_version": "1.1",
+        "method": {
+          "method_id": "assignment_jv",
+          "version": "1.0",
+          "name": "SciPy rectangular linear assignment (modified Jonker-Volgenant)",
+          "condition_ids": [
+            "assignment_one_to_one",
+            "finite_cost_matrix"
+          ],
+          "conditions": "Minimize a finite rectangular cost matrix; each task exactly once, each worker at most once. Workers fewer than tasks means infeasible under this contract."
+        },
+        "tool_name": "solve_assignment_jv",
+        "tool_version": "1.0",
+        "arguments_fields": [
+          "objective",
+          "entities",
+          "units",
+          "parameters"
+        ],
+        "argument_rules": "Copy these four fields from problem exactly. objective is a string; entities is an array; units and parameters are objects. No problem_type or missing_information inside arguments.",
+        "ordering": "Preserve entities order; matrix columns follow tasks; output values are row-major.",
+        "limits": {
+          "solver_seconds": 10,
+          "process_seconds": 20
+        }
+      },
+      {
+        "context_version": "1.1",
+        "method": {
+          "method_id": "highs_milp",
+          "version": "1.0",
+          "name": "HiGHS mixed integer linear programming through SciPy",
+          "condition_ids": [
+            "linear_objective_constraints",
+            "integer_decisions"
+          ],
+          "conditions": "Linear objective and constraints, finite input coefficients, integer decisions; binary one-to-one assignment also has this formulation. Infeasibility does not make the method inapplicable."
+        },
+        "tool_name": "solve_assignment",
+        "tool_version": "1.0",
+        "arguments_fields": [
+          "objective",
+          "entities",
+          "units",
+          "parameters"
+        ],
+        "argument_rules": "Copy these four fields from problem exactly. objective is a string; entities is an array; units and parameters are objects. No problem_type or missing_information inside arguments.",
+        "ordering": "Preserve entities order; matrix columns follow tasks; output values are row-major.",
+        "limits": {
+          "solver_seconds": 10,
+          "process_seconds": 20
+        }
+      }
+    ],
+    "source": {
+      "dataset": "Google OR-Tools assignment tutorial",
+      "record_id": "five_workers_four_tasks",
+      "split": "tutorial",
+      "usage": "demo_development_not_unseen_test",
+      "version": "page consulted 2026-09-19; matrix preserved in this record",
+      "url": "https://developers.google.com/optimization/assignment/assignment_example",
+      "derivation": "Paraphrase with the tutorial cost matrix; no OR-Tools implementation copied",
+      "license": "Google Developers content CC BY 4.0, code Apache 2.0; attribution retained; see THIRD_PARTY_NOTICES.md"
+    },
+    "reference_result": {
+      "status": "optimal",
+      "objective_value": 265,
+      "witness": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "proof": "Enumerate all 5P4=120 distinct-worker assignments to four tasks; minimum cost is 265. One optimum: T0->W3,T1->W2,T2->W1,T3->W0.",
+      "human_review": "pending",
+      "reference_status": "independent_exhaustive_enumeration"
+    }
+  },
+  "scenario": {
+    "domain": "public_civilian_teaching",
+    "time_urgency": null,
+    "evidence": "Public statement and explicit demo modeling notes only"
+  },
+  "process": [
+    {
+      "source": "public.description_en",
+      "target": "task_text",
+      "type": "string",
+      "unit": null,
+      "required": true,
+      "conversion": "identity",
+      "value_hash": "ccb1e0884a65607dbb098d085cf057c74b7ef9194af6163f9252fb0c0f6a1b50"
+    },
+    {
+      "source": "public.modeling_notes_en",
+      "target": "supplement",
+      "type": "string",
+      "unit": null,
+      "required": true,
+      "conversion": "identity",
+      "value_hash": "6438e423987a7a907d9bd6af35fad4b8a43ac6c101796598cc125a93440b8ae4"
+    },
+    {
+      "source": "public.entity_order",
+      "target": "entity_order",
+      "type": "array",
+      "unit": "identifier",
+      "required": true,
+      "conversion": "identity",
+      "value_hash": "007f73a31b7b2b0ce8f5d2fd30bd17ddd71ed7be9b0af515fc0383629b8aa155"
+    },
+    {
+      "source": "problem",
+      "target": "problem",
+      "type": "object",
+      "unit": "see problem.units and constraint.unit",
+      "required": true,
+      "conversion": "identity",
+      "value_hash": "6eaa45f6a1e31798651a52c2eee87b9cab854c00b267ee463268df8719942b1d"
+    },
+    {
+      "source": "problem.problem_type",
+      "target": "problem_class",
+      "type": "string",
+      "unit": null,
+      "required": true,
+      "conversion": "identity",
+      "value_hash": "84773d80a0c29bc06b4995b64b7c72105b21c44ad145c549ba3fff265a7e580f"
+    },
+    {
+      "source": "problem.objective",
+      "target": "objective",
+      "type": "string",
+      "unit": null,
+      "required": true,
+      "conversion": "identity",
+      "value_hash": "38153384e10c01e7182c0d820981f0b8739e8524942cc62534b86cfe31031d0c"
+    },
+    {
+      "source": "problem.entities",
+      "target": "entities",
+      "type": "array",
+      "unit": "identifier",
+      "required": true,
+      "conversion": "identity",
+      "value_hash": "007f73a31b7b2b0ce8f5d2fd30bd17ddd71ed7be9b0af515fc0383629b8aa155"
+    },
+    {
+      "source": "problem.units",
+      "target": "units",
+      "type": "object",
+      "unit": null,
+      "required": true,
+      "conversion": "identity",
+      "value_hash": "3192c9e804cb2871d2ec94ad56a3a6d069f97b23ea0a9847d8f47fde30eac203"
+    },
+    {
+      "source": "problem.parameters",
+      "target": "parameters",
+      "type": "object",
+      "unit": "problem.units and constraint.unit",
+      "required": true,
+      "conversion": "identity",
+      "value_hash": "0eec39364ab6aefdfdf3ea706984d7e079ef79240bf2d6b5833feedb2fbfb564"
+    },
+    {
+      "source": "problem.missing_information",
+      "target": "missing_information",
+      "type": "array",
+      "unit": null,
+      "required": true,
+      "conversion": "identity",
+      "value_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "materials.method_knowledge",
+      "target": "method_knowledge",
+      "type": "array",
+      "unit": null,
+      "required": true,
+      "conversion": "identity",
+      "value_hash": "4fec894cfc3b4d59681ca97fdeb6cc5b066956c866120213e3394b2ad362b8f4"
+    },
+    {
+      "source": "materials.algorithm_skeletons",
+      "target": "algorithm_skeletons",
+      "type": "array",
+      "unit": null,
+      "required": true,
+      "conversion": "identity",
+      "value_hash": "f56ee418021234a48a6dab34b4766d803cd2af1ccc26d06b382bf7830dc5d0cc"
+    },
+    {
+      "source": "materials.tool_contracts",
+      "target": "tool_contracts",
+      "type": "array",
+      "unit": null,
+      "required": true,
+      "conversion": "identity",
+      "value_hash": "a10d9c40879be5c5eb33fd1bfcc9da65ad85d130cc105f00f093d6b7f2d67906"
+    },
+    {
+      "source": "public.source",
+      "target": "source",
+      "type": "object",
+      "unit": null,
+      "required": true,
+      "conversion": "identity",
+      "value_hash": "693ef4be33facf0d473e2c818c50cacf40e76ace401a20cc5a28f97c16d12571"
+    },
+    {
+      "source": "answer",
+      "target": "reference_result",
+      "type": "object",
+      "unit": "problem.units.objective",
+      "required": true,
+      "conversion": "identity",
+      "value_hash": "2b53869fa24e6933f4eda07c4bd84c4324caf9c02ce518def5eeacfd307d2363"
+    }
+  ],
+  "evidence": {
+    "source": {
+      "dataset": "Google OR-Tools assignment tutorial",
+      "record_id": "five_workers_four_tasks",
+      "split": "tutorial",
+      "usage": "demo_development_not_unseen_test",
+      "version": "page consulted 2026-09-19; matrix preserved in this record",
+      "url": "https://developers.google.com/optimization/assignment/assignment_example",
+      "derivation": "Paraphrase with the tutorial cost matrix; no OR-Tools implementation copied",
+      "license": "Google Developers content CC BY 4.0, code Apache 2.0; attribution retained; see THIRD_PARTY_NOTICES.md"
+    },
+    "public_hash": "cc1bdd6591cc9eccd35b91c6595bdd54ed2b8f7e82b3b11483d98cb5c78c4613",
+    "problem_hash": "6eaa45f6a1e31798651a52c2eee87b9cab854c00b267ee463268df8719942b1d",
+    "human_review": "pending",
+    "construction": "Manually curated temporary handoff; not an output of task one",
+    "supplements": "This English statement is a demo paraphrase of the official tutorial, not a quoted benchmark record. Assignments are binary. Keep task identifiers T0,T1,T2,T3 and worker order. Quantity unit: assignments. Objective unit: cost_units.",
+    "missing": [
+      "project scenario classification",
+      "upstream metamodel release"
+    ],
+    "field_provenance": {
+      "task_text": "public.description_en (verbatim from local attributed input)",
+      "problem": "existing curated data/problems; source alignment pending human review",
+      "reference_result": "independent certificate in data/references/answers.json"
+    }
+  }
+}

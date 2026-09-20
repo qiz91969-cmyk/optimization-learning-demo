@@ -1,0 +1,331 @@
+{
+  "id": "advertising",
+  "version": "task2-handoff-1.0",
+  "unified": {
+    "task_text": "A cleaning company located in Edmonton wants to get the best exposure possible for promoting their new dishwashing detergent without exceeding their $250,000 advertising budget. To do so, the company decides to spend their money on two forms of advertising: (1) radio ads and (2) social media ads. Each radio ad costs $5,000; each social media ad costs $9,150. The expected exposure, based on industry ratings, is 60,500 viewers for each radio ad. Additionally, the expected exposure for each social media ad is 50,000 viewers. The company decides that at least 15 but no more than 40 radio ads should be ordered, and that at least 35 social media ads should be contracted. How many ads of each type should be run to obtain maximum exposure while staying within the budget?",
+    "supplement": "In this demo ad counts are nonnegative integers, an explicit counting interpretation. Preserve all original conditions even if no feasible solution exists. Keep the given entity order. Quantity unit: ads. Objective unit: viewers. Budget constraint unit: dollars; count constraints: ads.",
+    "entity_order": [
+      "radio_ads",
+      "social_ads"
+    ],
+    "problem": {
+      "problem_type": "linear",
+      "objective": "maximize",
+      "entities": [
+        "radio_ads",
+        "social_ads"
+      ],
+      "units": {
+        "quantity": "ads",
+        "objective": "viewers"
+      },
+      "parameters": {
+        "objective_coefficients": [
+          60500,
+          50000
+        ],
+        "constraints": [
+          {
+            "name": "budget",
+            "coefficients": [
+              5000,
+              9150
+            ],
+            "sense": "<=",
+            "rhs": 250000,
+            "unit": "dollars"
+          }
+        ],
+        "lower_bounds": [
+          15,
+          35
+        ],
+        "upper_bounds": [
+          40,
+          null
+        ],
+        "variable_type": "integer"
+      },
+      "missing_information": []
+    },
+    "problem_class": "linear",
+    "objective": "maximize",
+    "entities": [
+      "radio_ads",
+      "social_ads"
+    ],
+    "units": {
+      "quantity": "ads",
+      "objective": "viewers"
+    },
+    "parameters": {
+      "objective_coefficients": [
+        60500,
+        50000
+      ],
+      "constraints": [
+        {
+          "name": "budget",
+          "coefficients": [
+            5000,
+            9150
+          ],
+          "sense": "<=",
+          "rhs": 250000,
+          "unit": "dollars"
+        }
+      ],
+      "lower_bounds": [
+        15,
+        35
+      ],
+      "upper_bounds": [
+        40,
+        null
+      ],
+      "variable_type": "integer"
+    },
+    "missing_information": [],
+    "method_knowledge": [
+      {
+        "method_id": "highs_milp",
+        "version": "1.0",
+        "skeleton_id": "mixed_integer_linear_programming",
+        "name": "HiGHS mixed integer linear programming through SciPy",
+        "condition_ids": [
+          "linear_objective_constraints",
+          "integer_decisions"
+        ],
+        "conditions": "Linear objective and constraints, finite input coefficients, integer decisions; binary one-to-one assignment also has this formulation. Infeasibility does not make the method inapplicable.",
+        "initialization": "Objective vector, constraint matrix, variable bounds and integrality",
+        "core_operation": "scipy.optimize.milp (HiGHS)",
+        "stopping": "Optimality, infeasibility, unboundedness, ten-second solver limit or external timeout",
+        "output": "Values if present and feasible, objective, termination status; feasible does not imply optimal",
+        "tool_version": "1.0",
+        "tool_names": {
+          "assignment": "solve_assignment",
+          "linear": "solve_linear"
+        },
+        "source": "https://docs.scipy.org/doc/scipy-1.16.2/reference/generated/scipy.optimize.milp.html"
+      }
+    ],
+    "algorithm_skeletons": [
+      "mixed_integer_linear_programming"
+    ],
+    "tool_contracts": [
+      {
+        "context_version": "1.1",
+        "method": {
+          "method_id": "highs_milp",
+          "version": "1.0",
+          "name": "HiGHS mixed integer linear programming through SciPy",
+          "condition_ids": [
+            "linear_objective_constraints",
+            "integer_decisions"
+          ],
+          "conditions": "Linear objective and constraints, finite input coefficients, integer decisions; binary one-to-one assignment also has this formulation. Infeasibility does not make the method inapplicable."
+        },
+        "tool_name": "solve_linear",
+        "tool_version": "1.0",
+        "arguments_fields": [
+          "objective",
+          "entities",
+          "units",
+          "parameters"
+        ],
+        "argument_rules": "Copy these four fields from problem exactly. objective is a string; entities is an array; units and parameters are objects. No problem_type or missing_information inside arguments.",
+        "ordering": "Preserve entities order; matrix columns follow tasks; output values are row-major.",
+        "limits": {
+          "solver_seconds": 10,
+          "process_seconds": 20
+        }
+      }
+    ],
+    "source": {
+      "dataset": "NL4Opt",
+      "record_id": "-725478241",
+      "split": "test",
+      "usage": "demo_development_not_unseen_test",
+      "version": "49f1e0d66b7fdcd33305a7f281c2a7c13f5620ea",
+      "url": "https://github.com/nl4opt/nl4opt-competition/blob/49f1e0d66b7fdcd33305a7f281c2a7c13f5620ea/generation_data/test.jsonl",
+      "derivation": "English document copied; Chinese explanation and integer interpretation added",
+      "license": "repository MIT; see THIRD_PARTY_NOTICES.md"
+    },
+    "reference_result": {
+      "status": "infeasible",
+      "objective_value": null,
+      "witness": null,
+      "proof": "Required minimum spend is 15*5000+35*9150=395250, exceeding 250000. Contradiction holds for integers and reals.",
+      "human_review": "pending",
+      "reference_status": "arithmetic_infeasibility_certificate"
+    }
+  },
+  "scenario": {
+    "domain": "public_civilian_teaching",
+    "time_urgency": null,
+    "evidence": "Public statement and explicit demo modeling notes only"
+  },
+  "process": [
+    {
+      "source": "public.description_en",
+      "target": "task_text",
+      "type": "string",
+      "unit": null,
+      "required": true,
+      "conversion": "identity",
+      "value_hash": "a6737d72a2701ace334b109626a57f1ca6f4124442a3f30de1f2bceb958c4524"
+    },
+    {
+      "source": "public.modeling_notes_en",
+      "target": "supplement",
+      "type": "string",
+      "unit": null,
+      "required": true,
+      "conversion": "identity",
+      "value_hash": "37bbc84a0ffd1817263527a2c98a0f319957084b7d69dec62a88779baf9103bd"
+    },
+    {
+      "source": "public.entity_order",
+      "target": "entity_order",
+      "type": "array",
+      "unit": "identifier",
+      "required": true,
+      "conversion": "identity",
+      "value_hash": "d76a473fc93dd7bbda00b8cef752c98e3a543ba320577bb0cd450fdd3edfa9a8"
+    },
+    {
+      "source": "problem",
+      "target": "problem",
+      "type": "object",
+      "unit": "see problem.units and constraint.unit",
+      "required": true,
+      "conversion": "identity",
+      "value_hash": "d3a960ca524a2f198d772250649aa71346362eaacd0a6c0dc73c401469b70c21"
+    },
+    {
+      "source": "problem.problem_type",
+      "target": "problem_class",
+      "type": "string",
+      "unit": null,
+      "required": true,
+      "conversion": "identity",
+      "value_hash": "4dd109ad15a2481c6cd88948a95b3116061fd1b966bef5c92481ec848e167829"
+    },
+    {
+      "source": "problem.objective",
+      "target": "objective",
+      "type": "string",
+      "unit": null,
+      "required": true,
+      "conversion": "identity",
+      "value_hash": "8691fb171e2809eef407ca52f105748f521c16e137634481c871aaabb69ca473"
+    },
+    {
+      "source": "problem.entities",
+      "target": "entities",
+      "type": "array",
+      "unit": "identifier",
+      "required": true,
+      "conversion": "identity",
+      "value_hash": "d76a473fc93dd7bbda00b8cef752c98e3a543ba320577bb0cd450fdd3edfa9a8"
+    },
+    {
+      "source": "problem.units",
+      "target": "units",
+      "type": "object",
+      "unit": null,
+      "required": true,
+      "conversion": "identity",
+      "value_hash": "4c82e53abc97faf260e24341098c0c610885698b4f7d09178ebf962c81473185"
+    },
+    {
+      "source": "problem.parameters",
+      "target": "parameters",
+      "type": "object",
+      "unit": "problem.units and constraint.unit",
+      "required": true,
+      "conversion": "identity",
+      "value_hash": "6d5f82acb1ac9d2665b34f941b4c6590016b97ff9d0ed999288a4c1ad4267fde"
+    },
+    {
+      "source": "problem.missing_information",
+      "target": "missing_information",
+      "type": "array",
+      "unit": null,
+      "required": true,
+      "conversion": "identity",
+      "value_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "materials.method_knowledge",
+      "target": "method_knowledge",
+      "type": "array",
+      "unit": null,
+      "required": true,
+      "conversion": "identity",
+      "value_hash": "d22113a0839af9960f69568bc6795696f3013224f4fc69d46d43527b151ef5ea"
+    },
+    {
+      "source": "materials.algorithm_skeletons",
+      "target": "algorithm_skeletons",
+      "type": "array",
+      "unit": null,
+      "required": true,
+      "conversion": "identity",
+      "value_hash": "c9c8e0bf54acadc2ef5897da4fed64ac5df28cafa38419425ab451ff49957288"
+    },
+    {
+      "source": "materials.tool_contracts",
+      "target": "tool_contracts",
+      "type": "array",
+      "unit": null,
+      "required": true,
+      "conversion": "identity",
+      "value_hash": "089095eeb991f5c0ef0d3d208abeada197fc95e9c2337c7fe82ff72bd8c41bc2"
+    },
+    {
+      "source": "public.source",
+      "target": "source",
+      "type": "object",
+      "unit": null,
+      "required": true,
+      "conversion": "identity",
+      "value_hash": "6bb5db013babb0ba32fa663904ed144e5815af253a0fbd4c7038f2fd8b84a3f3"
+    },
+    {
+      "source": "answer",
+      "target": "reference_result",
+      "type": "object",
+      "unit": "problem.units.objective",
+      "required": true,
+      "conversion": "identity",
+      "value_hash": "1d7fcd2bdcad4cbf17c0eb8dc753920d27248042a285484501926dee471e1a43"
+    }
+  ],
+  "evidence": {
+    "source": {
+      "dataset": "NL4Opt",
+      "record_id": "-725478241",
+      "split": "test",
+      "usage": "demo_development_not_unseen_test",
+      "version": "49f1e0d66b7fdcd33305a7f281c2a7c13f5620ea",
+      "url": "https://github.com/nl4opt/nl4opt-competition/blob/49f1e0d66b7fdcd33305a7f281c2a7c13f5620ea/generation_data/test.jsonl",
+      "derivation": "English document copied; Chinese explanation and integer interpretation added",
+      "license": "repository MIT; see THIRD_PARTY_NOTICES.md"
+    },
+    "public_hash": "dbf41e742decd191df05c7702cf17806135208aa9b8bdd30cd8c6d054b3f783f",
+    "problem_hash": "d3a960ca524a2f198d772250649aa71346362eaacd0a6c0dc73c401469b70c21",
+    "human_review": "pending",
+    "construction": "Manually curated temporary handoff; not an output of task one",
+    "supplements": "In this demo ad counts are nonnegative integers, an explicit counting interpretation. Preserve all original conditions even if no feasible solution exists. Keep the given entity order. Quantity unit: ads. Objective unit: viewers. Budget constraint unit: dollars; count constraints: ads.",
+    "missing": [
+      "project scenario classification",
+      "upstream metamodel release"
+    ],
+    "field_provenance": {
+      "task_text": "public.description_en (verbatim from local attributed input)",
+      "problem": "existing curated data/problems; source alignment pending human review",
+      "reference_result": "independent certificate in data/references/answers.json"
+    }
+  }
+}

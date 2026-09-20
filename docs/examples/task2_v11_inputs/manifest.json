@@ -1,0 +1,141 @@
+{
+  "source": "outputs/ollama14b_comparison",
+  "purpose": "reading_snapshots_not_new_training_data",
+  "instances_sha256": "f750871d36f277c9e0f9ddff6ccaec5acbea7aeee0e9b03f00ed43824e645b3c",
+  "results_sha256": "def2f856be458bc703fdd0411ce2a1b4ba94c3f4c8393b3e1ff32fef2d716ee7",
+  "human_review": "pending",
+  "files": [
+    {
+      "path": "docs/examples/task2_v11_inputs/assignment/handoff.json",
+      "role": "temporary_handoff_contains_hidden_reference_not_whole_model_input",
+      "sha256": "bb6a0b07588a4cd9e741c78d4863f5155f89bfd367b0139e9078d5a6812ec126"
+    },
+    {
+      "path": "docs/examples/task2_v11_inputs/assignment/understanding_input.json",
+      "view_id": "assignment:understanding",
+      "role": "actual_first_user_input",
+      "sha256": "e7ba80843d27ef233b4be706a393e243a7835b45bcebc1c456ab303bcd2ee42e",
+      "matches_recorded_request": true
+    },
+    {
+      "path": "docs/examples/task2_v11_inputs/assignment/method_input.json",
+      "view_id": "assignment:method",
+      "role": "actual_first_user_input",
+      "sha256": "8346c74683eb2b97ed4352554d7e0ca166aa6b0085bd7fbe46fd68ade3d81dff",
+      "matches_recorded_request": true
+    },
+    {
+      "path": "docs/examples/task2_v11_inputs/assignment/call_input.json",
+      "view_id": "assignment:call",
+      "role": "actual_first_user_input",
+      "sha256": "80b5356905c4900c7b116c4ec952092f541621db2cac8aeb9354cd6256df3421",
+      "matches_recorded_request": true
+    },
+    {
+      "path": "docs/examples/task2_v11_inputs/assignment/result_input.json",
+      "view_id": "assignment:result",
+      "role": "actual_first_user_input",
+      "sha256": "bfd197c514977318de410c094145a21745d399e5f2ecf828738c8bbfb7c1d94f",
+      "matches_recorded_request": true
+    },
+    {
+      "path": "docs/examples/task2_v11_inputs/printers/handoff.json",
+      "role": "temporary_handoff_contains_hidden_reference_not_whole_model_input",
+      "sha256": "46f1a96c55b18c950c1e292b5e8bc224e8847fb3d477e06bf7538e3a236eef00"
+    },
+    {
+      "path": "docs/examples/task2_v11_inputs/printers/understanding_input.json",
+      "view_id": "printers:understanding",
+      "role": "actual_first_user_input",
+      "sha256": "7604ee1254df1d685ed9a1d2c82ee2cd9d53c5ad8481e2b2123830716c12604a",
+      "matches_recorded_request": true
+    },
+    {
+      "path": "docs/examples/task2_v11_inputs/printers/method_input.json",
+      "view_id": "printers:method",
+      "role": "actual_first_user_input",
+      "sha256": "65a4e40726f1ef5e9637eea717c170d9c2fe49cfd5d85189048c3159f0332cd3",
+      "matches_recorded_request": true
+    },
+    {
+      "path": "docs/examples/task2_v11_inputs/printers/call_input.json",
+      "view_id": "printers:call",
+      "role": "actual_first_user_input",
+      "sha256": "f5fd8332ba99abc5b2866cc94412df747c4fc71e445d295a5dbfef20fb824114",
+      "matches_recorded_request": true
+    },
+    {
+      "path": "docs/examples/task2_v11_inputs/printers/result_input.json",
+      "view_id": "printers:result",
+      "role": "actual_first_user_input",
+      "sha256": "a21b76035e7a2b5d66b1879f0847f7f1b2fd56c54f303749ee1db64ba1379e77",
+      "matches_recorded_request": true
+    },
+    {
+      "path": "docs/examples/task2_v11_inputs/bakery/handoff.json",
+      "role": "temporary_handoff_contains_hidden_reference_not_whole_model_input",
+      "sha256": "5805b7adb2d605bbc89d6b1619f6532191af4b784fd45bd906833a727b5b90f9"
+    },
+    {
+      "path": "docs/examples/task2_v11_inputs/bakery/understanding_input.json",
+      "view_id": "bakery:understanding",
+      "role": "actual_first_user_input",
+      "sha256": "b7dac3ee818bde3b287bed529b06ad509c06be1eec8a9b68582bcd189309cb23",
+      "matches_recorded_request": true
+    },
+    {
+      "path": "docs/examples/task2_v11_inputs/bakery/method_input.json",
+      "view_id": "bakery:method",
+      "role": "actual_first_user_input",
+      "sha256": "76bf288299881bcaf4743f6ed71590edd5048919d7a038757268298d3d288427",
+      "matches_recorded_request": true
+    },
+    {
+      "path": "docs/examples/task2_v11_inputs/bakery/call_input.json",
+      "view_id": "bakery:call",
+      "role": "actual_first_user_input",
+      "sha256": "080eed854b20e7bea075c80248a7684607d9d7e0843aa52f27206e13d96b7a66",
+      "matches_recorded_request": true
+    },
+    {
+      "path": "docs/examples/task2_v11_inputs/bakery/result_input.json",
+      "view_id": "bakery:result",
+      "role": "actual_first_user_input",
+      "sha256": "a4006478e519b596a7309b78a11b05b18462ded7292cfae0afebe1310b6f1071",
+      "matches_recorded_request": true
+    },
+    {
+      "path": "docs/examples/task2_v11_inputs/advertising/handoff.json",
+      "role": "temporary_handoff_contains_hidden_reference_not_whole_model_input",
+      "sha256": "9fd3896168d743933315377659958a9f7f7f38e714fd46403c5abeb55dbb0e8b"
+    },
+    {
+      "path": "docs/examples/task2_v11_inputs/advertising/understanding_input.json",
+      "view_id": "advertising:understanding",
+      "role": "actual_first_user_input",
+      "sha256": "1539ab26fd797b09c5510554c6244bfc6ebc8013680bb7d25d7338a6ca827897",
+      "matches_recorded_request": true
+    },
+    {
+      "path": "docs/examples/task2_v11_inputs/advertising/method_input.json",
+      "view_id": "advertising:method",
+      "role": "actual_first_user_input",
+      "sha256": "a5eb500d527e196623251cf24860d6ef0e99e82291e8e6a1fa0082a26eaa620f",
+      "matches_recorded_request": true
+    },
+    {
+      "path": "docs/examples/task2_v11_inputs/advertising/call_input.json",
+      "view_id": "advertising:call",
+      "role": "actual_first_user_input",
+      "sha256": "36790b01617861dba108c89f9cfc6b66d349199a4aec8cc613a3fbb31f819ad8",
+      "matches_recorded_request": true
+    },
+    {
+      "path": "docs/examples/task2_v11_inputs/advertising/result_input.json",
+      "view_id": "advertising:result",
+      "role": "actual_first_user_input",
+      "sha256": "f81304b2130c043354533523b38970a7b53de49f0322d07bbea7e2008228e2e6",
+      "matches_recorded_request": true
+    }
+  ]
+}

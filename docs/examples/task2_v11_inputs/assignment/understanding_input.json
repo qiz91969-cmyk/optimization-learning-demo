@@ -1,0 +1,34 @@
+{
+  "task_text": "Assign four civilian workshop tasks T0,T1,T2,T3 to five workers W0,W1,W2,W3,W4. Each task must be assigned to exactly one worker. Each worker can perform at most one task; one worker may remain idle. The cost matrix, with rows W0 to W4 and columns T0 to T3, is [[90,80,75,70],[35,85,55,65],[125,95,90,95],[45,110,95,115],[50,100,90,100]]. Minimize total assignment cost.",
+  "supplement": "This English statement is a demo paraphrase of the official tutorial, not a quoted benchmark record. Assignments are binary. Keep task identifiers T0,T1,T2,T3 and worker order. Quantity unit: assignments. Objective unit: cost_units.",
+  "entity_order": [
+    "W0",
+    "W1",
+    "W2",
+    "W3",
+    "W4"
+  ],
+  "field_contract": {
+    "empty_output": {
+      "problem_type": "",
+      "objective": "",
+      "entities": [],
+      "units": {
+        "quantity": "",
+        "objective": ""
+      },
+      "parameters": {
+        "tasks": [],
+        "cost_matrix": []
+      },
+      "missing_information": []
+    },
+    "rules": [
+      "problem_type: assignment for workers/tasks, otherwise linear for production/advertising.",
+      "objective: minimize or maximize; entities are identifier strings.",
+      "Assignment: tasks are identifiers; cost_matrix rows follow entities and columns follow tasks.",
+      "Linear: each constraint is {name: string, coefficients: number array, sense: <= or >= or =, rhs: number, unit: string}.",
+      "Linear: all vectors follow entities; use null for an absent upper bound; variable_type is integer or continuous."
+    ]
+  }
+}

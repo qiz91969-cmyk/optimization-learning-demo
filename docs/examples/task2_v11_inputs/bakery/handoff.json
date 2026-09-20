@@ -1,0 +1,354 @@
+{
+  "id": "bakery",
+  "version": "task2-handoff-1.0",
+  "unified": {
+    "task_text": "A bakery uses a stand-mixer and a slow bake oven to make bread and cookies. Each machine can run for at most 3000 hours per year. To bake a loaf of bread takes 1 hour in the stand mixer and 3 hours in the oven. A batch of cookies requires 0.5 hours in the mixer and 1 hour in the oven. The profit per loaf of bread is $5 and the profit per batch of cookies is $3. How should the bakery operate to maximize total profit?",
+    "supplement": "In this demo loaves and cookie batches are nonnegative integers. This is an explicit counting interpretation; NL4Opt supplies LP-formulation annotations. Keep the given entity order. Quantity unit: product_units. Objective unit: dollars. Constraint units: hours/year.",
+    "entity_order": [
+      "bread",
+      "cookie_batches"
+    ],
+    "problem": {
+      "problem_type": "linear",
+      "objective": "maximize",
+      "entities": [
+        "bread",
+        "cookie_batches"
+      ],
+      "units": {
+        "quantity": "product_units",
+        "objective": "dollars"
+      },
+      "parameters": {
+        "objective_coefficients": [
+          5,
+          3
+        ],
+        "constraints": [
+          {
+            "name": "mixer",
+            "coefficients": [
+              1,
+              0.5
+            ],
+            "sense": "<=",
+            "rhs": 3000,
+            "unit": "hours/year"
+          },
+          {
+            "name": "oven",
+            "coefficients": [
+              3,
+              1
+            ],
+            "sense": "<=",
+            "rhs": 3000,
+            "unit": "hours/year"
+          }
+        ],
+        "lower_bounds": [
+          0,
+          0
+        ],
+        "upper_bounds": [
+          null,
+          null
+        ],
+        "variable_type": "integer"
+      },
+      "missing_information": []
+    },
+    "problem_class": "linear",
+    "objective": "maximize",
+    "entities": [
+      "bread",
+      "cookie_batches"
+    ],
+    "units": {
+      "quantity": "product_units",
+      "objective": "dollars"
+    },
+    "parameters": {
+      "objective_coefficients": [
+        5,
+        3
+      ],
+      "constraints": [
+        {
+          "name": "mixer",
+          "coefficients": [
+            1,
+            0.5
+          ],
+          "sense": "<=",
+          "rhs": 3000,
+          "unit": "hours/year"
+        },
+        {
+          "name": "oven",
+          "coefficients": [
+            3,
+            1
+          ],
+          "sense": "<=",
+          "rhs": 3000,
+          "unit": "hours/year"
+        }
+      ],
+      "lower_bounds": [
+        0,
+        0
+      ],
+      "upper_bounds": [
+        null,
+        null
+      ],
+      "variable_type": "integer"
+    },
+    "missing_information": [],
+    "method_knowledge": [
+      {
+        "method_id": "highs_milp",
+        "version": "1.0",
+        "skeleton_id": "mixed_integer_linear_programming",
+        "name": "HiGHS mixed integer linear programming through SciPy",
+        "condition_ids": [
+          "linear_objective_constraints",
+          "integer_decisions"
+        ],
+        "conditions": "Linear objective and constraints, finite input coefficients, integer decisions; binary one-to-one assignment also has this formulation. Infeasibility does not make the method inapplicable.",
+        "initialization": "Objective vector, constraint matrix, variable bounds and integrality",
+        "core_operation": "scipy.optimize.milp (HiGHS)",
+        "stopping": "Optimality, infeasibility, unboundedness, ten-second solver limit or external timeout",
+        "output": "Values if present and feasible, objective, termination status; feasible does not imply optimal",
+        "tool_version": "1.0",
+        "tool_names": {
+          "assignment": "solve_assignment",
+          "linear": "solve_linear"
+        },
+        "source": "https://docs.scipy.org/doc/scipy-1.16.2/reference/generated/scipy.optimize.milp.html"
+      }
+    ],
+    "algorithm_skeletons": [
+      "mixed_integer_linear_programming"
+    ],
+    "tool_contracts": [
+      {
+        "context_version": "1.1",
+        "method": {
+          "method_id": "highs_milp",
+          "version": "1.0",
+          "name": "HiGHS mixed integer linear programming through SciPy",
+          "condition_ids": [
+            "linear_objective_constraints",
+            "integer_decisions"
+          ],
+          "conditions": "Linear objective and constraints, finite input coefficients, integer decisions; binary one-to-one assignment also has this formulation. Infeasibility does not make the method inapplicable."
+        },
+        "tool_name": "solve_linear",
+        "tool_version": "1.0",
+        "arguments_fields": [
+          "objective",
+          "entities",
+          "units",
+          "parameters"
+        ],
+        "argument_rules": "Copy these four fields from problem exactly. objective is a string; entities is an array; units and parameters are objects. No problem_type or missing_information inside arguments.",
+        "ordering": "Preserve entities order; matrix columns follow tasks; output values are row-major.",
+        "limits": {
+          "solver_seconds": 10,
+          "process_seconds": 20
+        }
+      }
+    ],
+    "source": {
+      "dataset": "NL4Opt",
+      "record_id": "1771352861",
+      "split": "test",
+      "usage": "demo_development_not_unseen_test",
+      "version": "49f1e0d66b7fdcd33305a7f281c2a7c13f5620ea",
+      "url": "https://github.com/nl4opt/nl4opt-competition/blob/49f1e0d66b7fdcd33305a7f281c2a7c13f5620ea/generation_data/test.jsonl",
+      "derivation": "English document copied; Chinese explanation and integer interpretation added",
+      "license": "repository MIT; see THIRD_PARTY_NOTICES.md"
+    },
+    "reference_result": {
+      "status": "optimal",
+      "objective_value": 9000,
+      "witness": [
+        0,
+        3000
+      ],
+      "proof": "5*x+3*y <= 3*(3*x+y) <= 9000 for x>=0. x=0,y=3000 attains the bound and mixer usage is 1500<=3000.",
+      "human_review": "pending",
+      "reference_status": "feasible_witness_and_matching_upper_bound"
+    }
+  },
+  "scenario": {
+    "domain": "public_civilian_teaching",
+    "time_urgency": null,
+    "evidence": "Public statement and explicit demo modeling notes only"
+  },
+  "process": [
+    {
+      "source": "public.description_en",
+      "target": "task_text",
+      "type": "string",
+      "unit": null,
+      "required": true,
+      "conversion": "identity",
+      "value_hash": "75872c26d4d8871e6b4cad4ba4e8b39a9c0d5c921a8f479916307f669af3a486"
+    },
+    {
+      "source": "public.modeling_notes_en",
+      "target": "supplement",
+      "type": "string",
+      "unit": null,
+      "required": true,
+      "conversion": "identity",
+      "value_hash": "f4ec6bb6bcc0697bd32b4661c7a49b48ac0b7a3c42ac212496964e71a81aafcd"
+    },
+    {
+      "source": "public.entity_order",
+      "target": "entity_order",
+      "type": "array",
+      "unit": "identifier",
+      "required": true,
+      "conversion": "identity",
+      "value_hash": "9c5dada691d4aab8593fb1fcf87408d231221171b9341f1e0ae50e24e7df21be"
+    },
+    {
+      "source": "problem",
+      "target": "problem",
+      "type": "object",
+      "unit": "see problem.units and constraint.unit",
+      "required": true,
+      "conversion": "identity",
+      "value_hash": "76c6c8fbf78b1fbb7551d784c36e1d286bca6666c9faa6f75f9644b14ca9aa05"
+    },
+    {
+      "source": "problem.problem_type",
+      "target": "problem_class",
+      "type": "string",
+      "unit": null,
+      "required": true,
+      "conversion": "identity",
+      "value_hash": "4dd109ad15a2481c6cd88948a95b3116061fd1b966bef5c92481ec848e167829"
+    },
+    {
+      "source": "problem.objective",
+      "target": "objective",
+      "type": "string",
+      "unit": null,
+      "required": true,
+      "conversion": "identity",
+      "value_hash": "8691fb171e2809eef407ca52f105748f521c16e137634481c871aaabb69ca473"
+    },
+    {
+      "source": "problem.entities",
+      "target": "entities",
+      "type": "array",
+      "unit": "identifier",
+      "required": true,
+      "conversion": "identity",
+      "value_hash": "9c5dada691d4aab8593fb1fcf87408d231221171b9341f1e0ae50e24e7df21be"
+    },
+    {
+      "source": "problem.units",
+      "target": "units",
+      "type": "object",
+      "unit": null,
+      "required": true,
+      "conversion": "identity",
+      "value_hash": "442ab4a96b623d440be8e95875a3eade1b72a822265ec680804f9527e2c3aaa2"
+    },
+    {
+      "source": "problem.parameters",
+      "target": "parameters",
+      "type": "object",
+      "unit": "problem.units and constraint.unit",
+      "required": true,
+      "conversion": "identity",
+      "value_hash": "df97b86b5129c244084c845b96507d08c489d3b09c396bc1f52b895d192ba18b"
+    },
+    {
+      "source": "problem.missing_information",
+      "target": "missing_information",
+      "type": "array",
+      "unit": null,
+      "required": true,
+      "conversion": "identity",
+      "value_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "materials.method_knowledge",
+      "target": "method_knowledge",
+      "type": "array",
+      "unit": null,
+      "required": true,
+      "conversion": "identity",
+      "value_hash": "d22113a0839af9960f69568bc6795696f3013224f4fc69d46d43527b151ef5ea"
+    },
+    {
+      "source": "materials.algorithm_skeletons",
+      "target": "algorithm_skeletons",
+      "type": "array",
+      "unit": null,
+      "required": true,
+      "conversion": "identity",
+      "value_hash": "c9c8e0bf54acadc2ef5897da4fed64ac5df28cafa38419425ab451ff49957288"
+    },
+    {
+      "source": "materials.tool_contracts",
+      "target": "tool_contracts",
+      "type": "array",
+      "unit": null,
+      "required": true,
+      "conversion": "identity",
+      "value_hash": "089095eeb991f5c0ef0d3d208abeada197fc95e9c2337c7fe82ff72bd8c41bc2"
+    },
+    {
+      "source": "public.source",
+      "target": "source",
+      "type": "object",
+      "unit": null,
+      "required": true,
+      "conversion": "identity",
+      "value_hash": "9ff3a3364a87993c5835ddeb713d7d2ebd346fa1d95afc66a63e5dd2a2ffec4b"
+    },
+    {
+      "source": "answer",
+      "target": "reference_result",
+      "type": "object",
+      "unit": "problem.units.objective",
+      "required": true,
+      "conversion": "identity",
+      "value_hash": "47746cd4724d7a27d0ad2e9fa74682743df3840196e13b0812bfa65c5fa41da8"
+    }
+  ],
+  "evidence": {
+    "source": {
+      "dataset": "NL4Opt",
+      "record_id": "1771352861",
+      "split": "test",
+      "usage": "demo_development_not_unseen_test",
+      "version": "49f1e0d66b7fdcd33305a7f281c2a7c13f5620ea",
+      "url": "https://github.com/nl4opt/nl4opt-competition/blob/49f1e0d66b7fdcd33305a7f281c2a7c13f5620ea/generation_data/test.jsonl",
+      "derivation": "English document copied; Chinese explanation and integer interpretation added",
+      "license": "repository MIT; see THIRD_PARTY_NOTICES.md"
+    },
+    "public_hash": "f12b4f53c0a0dc52ad7bc36f57788a93f5c36394a9cfb07944d9e72226bb3663",
+    "problem_hash": "76c6c8fbf78b1fbb7551d784c36e1d286bca6666c9faa6f75f9644b14ca9aa05",
+    "human_review": "pending",
+    "construction": "Manually curated temporary handoff; not an output of task one",
+    "supplements": "In this demo loaves and cookie batches are nonnegative integers. This is an explicit counting interpretation; NL4Opt supplies LP-formulation annotations. Keep the given entity order. Quantity unit: product_units. Objective unit: dollars. Constraint units: hours/year.",
+    "missing": [
+      "project scenario classification",
+      "upstream metamodel release"
+    ],
+    "field_provenance": {
+      "task_text": "public.description_en (verbatim from local attributed input)",
+      "problem": "existing curated data/problems; source alignment pending human review",
+      "reference_result": "independent certificate in data/references/answers.json"
+    }
+  }
+}

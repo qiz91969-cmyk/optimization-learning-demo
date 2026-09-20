@@ -1,0 +1,20 @@
+{
+  "version": "1.1",
+  "fields": [
+    {"source": "public.description_en", "target": "task_text", "type": "string", "unit": null, "required": true, "conversion": "identity"},
+    {"source": "public.modeling_notes_en", "target": "supplement", "type": "string", "unit": null, "required": true, "conversion": "identity"},
+    {"source": "public.entity_order", "target": "entity_order", "type": "array", "unit": "identifier", "required": true, "conversion": "identity"},
+    {"source": "problem", "target": "problem", "type": "object", "unit": "see problem.units and constraint.unit", "required": true, "conversion": "identity"},
+    {"source": "problem.problem_type", "target": "problem_class", "type": "string", "unit": null, "required": true, "conversion": "identity"},
+    {"source": "problem.objective", "target": "objective", "type": "string", "unit": null, "required": true, "conversion": "identity"},
+    {"source": "problem.entities", "target": "entities", "type": "array", "unit": "identifier", "required": true, "conversion": "identity"},
+    {"source": "problem.units", "target": "units", "type": "object", "unit": null, "required": true, "conversion": "identity"},
+    {"source": "problem.parameters", "target": "parameters", "type": "object", "unit": "problem.units and constraint.unit", "required": true, "conversion": "identity"},
+    {"source": "problem.missing_information", "target": "missing_information", "type": "array", "unit": null, "required": true, "conversion": "identity"},
+    {"source": "materials.method_knowledge", "target": "method_knowledge", "type": "array", "unit": null, "required": true, "conversion": "identity"},
+    {"source": "materials.algorithm_skeletons", "target": "algorithm_skeletons", "type": "array", "unit": null, "required": true, "conversion": "identity"},
+    {"source": "materials.tool_contracts", "target": "tool_contracts", "type": "array", "unit": null, "required": true, "conversion": "identity"},
+    {"source": "public.source", "target": "source", "type": "object", "unit": null, "required": true, "conversion": "identity"},
+    {"source": "answer", "target": "reference_result", "type": "object", "unit": "problem.units.objective", "required": true, "conversion": "identity"}
+  ]
+}

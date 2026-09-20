@@ -1,0 +1,73 @@
+{
+  "problem": {
+    "problem_type": "linear",
+    "objective": "maximize",
+    "entities": [
+      "bread",
+      "cookie_batches"
+    ],
+    "units": {
+      "quantity": "product_units",
+      "objective": "dollars"
+    },
+    "parameters": {
+      "objective_coefficients": [
+        5,
+        3
+      ],
+      "constraints": [
+        {
+          "name": "mixer",
+          "coefficients": [
+            1,
+            0.5
+          ],
+          "sense": "<=",
+          "rhs": 3000,
+          "unit": "hours/year"
+        },
+        {
+          "name": "oven",
+          "coefficients": [
+            3,
+            1
+          ],
+          "sense": "<=",
+          "rhs": 3000,
+          "unit": "hours/year"
+        }
+      ],
+      "lower_bounds": [
+        0,
+        0
+      ],
+      "upper_bounds": [
+        null,
+        null
+      ],
+      "variable_type": "integer"
+    },
+    "missing_information": []
+  },
+  "scenario": {
+    "domain": "public_civilian_teaching",
+    "time_urgency": null,
+    "evidence": "Public statement and explicit demo modeling notes only"
+  },
+  "requirements": {
+    "objective": "maximize",
+    "need": "exact optimum or explicit termination status"
+  },
+  "candidates": [
+    {
+      "method_id": "highs_milp",
+      "version": "1.0",
+      "name": "HiGHS mixed integer linear programming through SciPy",
+      "condition_ids": [
+        "linear_objective_constraints",
+        "integer_decisions"
+      ],
+      "conditions": "Linear objective and constraints, finite input coefficients, integer decisions; binary one-to-one assignment also has this formulation. Infeasibility does not make the method inapplicable."
+    }
+  ]
+}
