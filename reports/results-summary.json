@@ -1,0 +1,303 @@
+{
+  "scope": "four development cases, not an unseen benchmark",
+  "models": {
+    "0.5B": {
+      "source": "outputs/task2_v11/results.json",
+      "source_sha256": "03c4611666fa4a393bdc1455b0ea0e48d911d550339e4a17b87597d5b1d846c5",
+      "metrics": {
+        "views": 16,
+        "first_correct": 6,
+        "final_correct": 6,
+        "feedback_repaired": 0,
+        "attempts": 36,
+        "elapsed_seconds": 328.529,
+        "first_raw_json": 9,
+        "first_online_pass": 6,
+        "tool_executions": 1,
+        "chain_passed": false
+      },
+      "views": [
+        {
+          "case_id": "assignment",
+          "form": "understanding",
+          "first_correct": false,
+          "final_correct": false,
+          "feedback_repaired": false
+        },
+        {
+          "case_id": "assignment",
+          "form": "method",
+          "first_correct": true,
+          "final_correct": true,
+          "feedback_repaired": false
+        },
+        {
+          "case_id": "assignment",
+          "form": "call",
+          "first_correct": false,
+          "final_correct": false,
+          "feedback_repaired": false
+        },
+        {
+          "case_id": "assignment",
+          "form": "result",
+          "first_correct": false,
+          "final_correct": false,
+          "feedback_repaired": false
+        },
+        {
+          "case_id": "printers",
+          "form": "understanding",
+          "first_correct": false,
+          "final_correct": false,
+          "feedback_repaired": false
+        },
+        {
+          "case_id": "printers",
+          "form": "method",
+          "first_correct": true,
+          "final_correct": true,
+          "feedback_repaired": false
+        },
+        {
+          "case_id": "printers",
+          "form": "call",
+          "first_correct": true,
+          "final_correct": true,
+          "feedback_repaired": false
+        },
+        {
+          "case_id": "printers",
+          "form": "result",
+          "first_correct": false,
+          "final_correct": false,
+          "feedback_repaired": false
+        },
+        {
+          "case_id": "bakery",
+          "form": "understanding",
+          "first_correct": false,
+          "final_correct": false,
+          "feedback_repaired": false
+        },
+        {
+          "case_id": "bakery",
+          "form": "method",
+          "first_correct": true,
+          "final_correct": true,
+          "feedback_repaired": false
+        },
+        {
+          "case_id": "bakery",
+          "form": "call",
+          "first_correct": false,
+          "final_correct": false,
+          "feedback_repaired": false
+        },
+        {
+          "case_id": "bakery",
+          "form": "result",
+          "first_correct": false,
+          "final_correct": false,
+          "feedback_repaired": false
+        },
+        {
+          "case_id": "advertising",
+          "form": "understanding",
+          "first_correct": false,
+          "final_correct": false,
+          "feedback_repaired": false
+        },
+        {
+          "case_id": "advertising",
+          "form": "method",
+          "first_correct": true,
+          "final_correct": true,
+          "feedback_repaired": false
+        },
+        {
+          "case_id": "advertising",
+          "form": "call",
+          "first_correct": false,
+          "final_correct": false,
+          "feedback_repaired": false
+        },
+        {
+          "case_id": "advertising",
+          "form": "result",
+          "first_correct": true,
+          "final_correct": true,
+          "feedback_repaired": false
+        }
+      ]
+    },
+    "14B": {
+      "source": "outputs/ollama14b_comparison/results.json",
+      "source_sha256": "592f072c3aebca605756e39c057548f9ee73491335e473773de872d5a68845de",
+      "metrics": {
+        "views": 16,
+        "first_correct": 15,
+        "final_correct": 15,
+        "feedback_repaired": 0,
+        "attempts": 16,
+        "elapsed_seconds": 252.695,
+        "first_raw_json": 16,
+        "first_online_pass": 16,
+        "tool_executions": 4,
+        "chain_passed": true
+      },
+      "views": [
+        {
+          "case_id": "assignment",
+          "form": "understanding",
+          "first_correct": true,
+          "final_correct": true,
+          "feedback_repaired": false
+        },
+        {
+          "case_id": "assignment",
+          "form": "method",
+          "first_correct": true,
+          "final_correct": true,
+          "feedback_repaired": false
+        },
+        {
+          "case_id": "assignment",
+          "form": "call",
+          "first_correct": true,
+          "final_correct": true,
+          "feedback_repaired": false
+        },
+        {
+          "case_id": "assignment",
+          "form": "result",
+          "first_correct": true,
+          "final_correct": true,
+          "feedback_repaired": false
+        },
+        {
+          "case_id": "printers",
+          "form": "understanding",
+          "first_correct": false,
+          "final_correct": false,
+          "feedback_repaired": false
+        },
+        {
+          "case_id": "printers",
+          "form": "method",
+          "first_correct": true,
+          "final_correct": true,
+          "feedback_repaired": false
+        },
+        {
+          "case_id": "printers",
+          "form": "call",
+          "first_correct": true,
+          "final_correct": true,
+          "feedback_repaired": false
+        },
+        {
+          "case_id": "printers",
+          "form": "result",
+          "first_correct": true,
+          "final_correct": true,
+          "feedback_repaired": false
+        },
+        {
+          "case_id": "bakery",
+          "form": "understanding",
+          "first_correct": true,
+          "final_correct": true,
+          "feedback_repaired": false
+        },
+        {
+          "case_id": "bakery",
+          "form": "method",
+          "first_correct": true,
+          "final_correct": true,
+          "feedback_repaired": false
+        },
+        {
+          "case_id": "bakery",
+          "form": "call",
+          "first_correct": true,
+          "final_correct": true,
+          "feedback_repaired": false
+        },
+        {
+          "case_id": "bakery",
+          "form": "result",
+          "first_correct": true,
+          "final_correct": true,
+          "feedback_repaired": false
+        },
+        {
+          "case_id": "advertising",
+          "form": "understanding",
+          "first_correct": true,
+          "final_correct": true,
+          "feedback_repaired": false
+        },
+        {
+          "case_id": "advertising",
+          "form": "method",
+          "first_correct": true,
+          "final_correct": true,
+          "feedback_repaired": false
+        },
+        {
+          "case_id": "advertising",
+          "form": "call",
+          "first_correct": true,
+          "final_correct": true,
+          "feedback_repaired": false
+        },
+        {
+          "case_id": "advertising",
+          "form": "result",
+          "first_correct": true,
+          "final_correct": true,
+          "feedback_repaired": false
+        }
+      ]
+    }
+  },
+  "comparability": {
+    "same_config_hashes": true,
+    "all_first_prompts_equal": false,
+    "same_except_fixture_elapsed": true,
+    "first_prompt_differences": {
+      "advertising:call": [],
+      "advertising:method": [],
+      "advertising:result": [
+        "messages[1].content.actual_return.elapsed_seconds"
+      ],
+      "advertising:understanding": [],
+      "assignment:call": [],
+      "assignment:method": [],
+      "assignment:result": [
+        "messages[1].content.actual_return.elapsed_seconds"
+      ],
+      "assignment:understanding": [],
+      "bakery:call": [],
+      "bakery:method": [],
+      "bakery:result": [
+        "messages[1].content.actual_return.elapsed_seconds"
+      ],
+      "bakery:understanding": [],
+      "printers:call": [],
+      "printers:method": [],
+      "printers:result": [
+        "messages[1].content.actual_return.elapsed_seconds"
+      ],
+      "printers:understanding": []
+    }
+  },
+  "recorded_tests": {
+    "tests": 143,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "human_review": "pending"
+}

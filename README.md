@@ -1,351 +1,176 @@
-# optimization-learning-demo
+# 优化问题训练模板 Demo
 
-## 当前主线：任务二训练模板
+以公开优化案例为材料，验证**任务二：统一训练要素、分层组织信息、配置训练模板，以及复用与实例化验证**。
 
-新增的 `run_templates.py` 才是本轮任务二入口；下方 `run_demo.py` 部分是保留的旧Demo，不把旧成绩算入新模板成绩。
+本项目不重新实现任务一，而是在暂缺正式交接时，用人工整理的公开材料跑通任务二流程。不进行微调，也不把运行日志直接当作已验收训练集。
 
-任务二主线：**临时交接档案 → 统一字段与信息分层 → 三类模板的四种视图 → 本地Qwen → 检查/实际求解 → 可追溯报告**。
-本轮用4道公开民用开发题形成16个基础视图，不实现任务一自动建模系统、不做任务三扩充或微调。
+**当前结果：**4道开发题、三类模板、16个独立视图；本地0.5B核验通过6个，服务器14B通过15个；14B完成一次工人分配串联。保存的自动化测试报告为143项通过。模型成绩与代码测试分开统计。
 
-优先阅读：
-0. [训练模板：案例、输入、处理流程与模型对比](docs/任务二训练模板案例流程与模型对比.md)：优先阅读。从四道题及来源开始，链接每题交接档案与实际模板输入，用方框和箭头说明处理流程，最后比较0.5B与14B的真实结果。此前的[案例与实现讲解（HTML）](docs/任务二Demo案例与实现讲解.html)保留供查阅。
-1. [任务二学习说明](docs/任务二学习说明.md)：逐步理解模板在干什么。
-2. [四份材料与任务二要求对照](docs/四份材料与任务二要求对照.md)：采用位置和未采用的内容。
-3. 本机已完成的最新实测见 `outputs/task2_v11/任务二进度总览.html`，或同目录Markdown；报告来自真实 `results.json`。`outputs/task2_demo`是保留的v1.0历史记录。
-
-服务器模型入口已增加：见[Ollama服务器接入说明](docs/Ollama服务器接入说明.md)。先保持SSH隧道，再运行 `run_templates.py probe --backend ollama`；默认原本地模型入口不变。14B记录单独保存，报告展示实际模型名称。两份记录可用 `python -m task2.compare --right outputs/ollama14b_comparison/results.json --directory outputs/ollama14b_comparison` 生成对比报告；未齐全时报告会标明不完整，不用缺失结果冒充失败。
-
-```powershell
-# 首次准备；已有目录会拒绝覆盖，复跑请改成task2_demo_02等新目录。
-.\.venv\Scripts\python.exe run_templates.py instantiate --directory outputs/task2_demo
-.\.venv\Scripts\python.exe run_templates.py validate --directory outputs/task2_demo
-.\.venv\Scripts\python.exe run_templates.py run --directory outputs/task2_demo --chain
-.\.venv\Scripts\python.exe -m pytest -q --junitxml=outputs/task2_demo/tests.xml
-.\.venv\Scripts\python.exe run_templates.py report --directory outputs/task2_demo --tests-xml outputs/task2_demo/tests.xml
-```
-
-单独测试可在新目录实例化后，执行 `run --directory outputs/task2_demo_02 --case assignment --template tool_use --form call`。
-三类 `--template` 是 `problem_understanding`、`method_selection`、`tool_use`；四种 `--form` 是 `understanding`、`method`、`call`、`result`。
-`run` 默认最多首轮加2次反馈，`--retries 0` 可关闭修正。每个视图独立运行，`--chain` 额外运行工人分配串联。
-退出码0表示完成有界运行，不保证模型回答正确；`validate` 检查失败返回2。运行目录不自动合并，防止不同提示/配置版本混算。
-
-`instantiate` 不调用Qwen，但会真实求解4题，核验临时档案并准备返回解读材料。`run` 使用与旧Demo相同的两套Python环境和本地Qwen权重；路径覆盖采用下文环境变量，不下载模型。
-HTML是独立文档，直接打开，无需服务器。`outputs/`被Git忽略；分享报告需要明确选择文件，不能把“本机生成”理解为“GitHub已更新”。本轮不自动提交或推送。
-
-## 代码结构与模块职责
-
-### 1. 先看整体结构
-
-当前代码以任务二为主：把已经整理的公开案例转换成训练模板，再用模型试做、工具执行和独立核验检查模板是否可用。不是让模型先完成整个任务一，也没有进行微调。
+## 1. 处理流程
 
 ```text
-optimization-learning-demo/
-|-- run_templates.py          任务二命令行入口
-|-- configs/task2/            字段、模板、方法的配置
-|   |-- mappings.json         交接字段映射规则
-|   |-- templates.json        三类模板的输入白名单与指令
-|   `-- methods.json          方法知识卡、条件与工具版本
-|-- task2/                    任务二核心代码
-|   |-- core.py               交接整理、模板实例化、消息生成与导出
-|   |-- workflow.py           准备、验证、人工故障检查和串联流程
-|   |-- runtime.py            单个模板的模型调用、反馈与独立评分
-|   |-- tools.py              注册求解工具及隔离执行
-|   |-- report.py             单次运行报告
-|   `-- compare.py            两份模型运行结果的对比
-|-- demo/                     旧流程，以及任务二继续复用的基础模块
-|-- data/
-|   |-- inputs/               题干、来源和补充约定
-|   |-- problems/             已整理的结构化问题
-|   `-- references/           独立参考答案及核验依据
-|-- tests/                    自动化测试
-|-- scripts/                  辅助脚本
-|-- docs/                     讲解文档与阅读用输入副本
-|-- outputs/                  实例、逐轮记录、核验结果与报告
-|-- run_demo.py               保留的旧描述到求解入口
-|-- run_fault_checks.py       旧流程的人工故障演示
-|-- check_environment.py      本地环境与模型检查
-`-- requirements.txt          Demo依赖清单
+公开题干 + 已整理问题 + 方法知识 + 工具说明
+                         ↓
+              临时交接档案与字段映射
+                         ↓
+        输入 / 过程 / 目标 / 核验证据分层
+                         ↓
+           问题理解、方法选择、工具使用
+                         ↓
+          模型回答 → 在线检查 → 工具执行
+                         ↓
+             独立核验、运行记录与报告
 ```
 
-`configs`规定规则，`task2`执行规则，模型生成答案，求解器进行计算，核验代码判断结果。`outputs`保存证据，不是源代码；`.venv`是运行环境，不是项目实现，也不应上传Git。
+模型生成回答，求解器计算，Harness组织请求、检查接口、有限反馈、调度工具并记录。**格式合格不等于答案正确**，因此还需独立核验。
 
-### 2. 入口：run_templates.py
-
-入口负责读取命令参数、选择模型后端、调度模块和保存结果，不把全部算法写在一个文件中。
-
-| 子命令 | 实际作用 | 是否调用大模型 |
+| 任务二要求 | 实现 | 边界 |
 |---|---|---|
-| `instantiate` | 为四道题准备交接档案和16个模板视图，导出示例，并检查实例 | 否，但会真实调用求解器准备返回材料 |
-| `validate` | 检查配置版本、目标结构、信息隔离及导出一致性 | 否 |
-| `run` | 按案例或模板运行模型，检查输出，必要时反馈、执行工具并评分 | 是 |
-| `report` | 根据保存的结果生成Markdown与HTML报告 | 否 |
-| `probe` | 查询Ollama服务及模型信息，检查接入状态 | 不生成回答 |
+| 训练要素提取与统一表达 | 配置来源字段、类型、必需性和映射，记录来源及补充条件 | 接收已整理材料；目前以直接映射为主 |
+| 输入、过程与目标分层 | 分开保存input、process、target、evidence，请求采用白名单 | 参考答案不能整体进入请求 |
+| 面向学习目标配置模板 | 同一题生成四种视图，归属三类模板 | 不是四种模板类别 |
+| 复用与实例化验证 | 跨案例实例化、导出往返检查、错误注入及真实运行 | 不代表完整项目场景已覆盖 |
 
-`--backend local`使用本地0.5B；`--backend ollama`使用服务端模型。`--chain`额外运行工人分配的串联流程。程序正常结束不代表模型全部答对，要看记录中的`final_correct`。
+## 2. 案例与来源
 
-### 3. 配置：规定模板的规则
+下表是参考问题及核验依据，不是模型成绩。
 
-| 文件 | 规定什么 | 具体例子 |
+| 案例 | 问题描述 | 参考结果与关注点 |
 |---|---|---|
-| `configs/task2/mappings.json` | 来源路径、目标字段、类型、必需性和转换方式 | 把题干等交接字段放到统一记录中，并保留映射记录 |
-| `configs/task2/templates.json` | 模板指令、类别和允许进入模型的输入字段 | 问题理解给题干和空字段约定，不给参考问题答案 |
-| `configs/task2/methods.json` | 方法知识卡、适用条件标识、算法骨架和工具版本 | 工人分配允许专用指派方法或MILP方法 |
+| 打印机生产 | 两种产品有各自产能，共享安装设备，选择产量使利润最大 | 彩色20台、黑白15台，利润5050；检查共享约束及整数类型 |
+| 面包房生产 | 两类产品消耗不同的搅拌、烘烤时间，选择生产量 | 面包0、饼干3000批，利润9000；检查工时与系数对应 |
+| 广告预算 | 两类广告有最低投放量和总预算限制 | 最低费用395250超过预算250000，应无解，不能删除条件 |
+| 工人分配 | 五名工人承担四项工作，每人至多一项，每项恰好一人 | 最小成本265；检查矩阵顺序与分配约束 |
 
-当前字段转换只实现已登记的直接映射，不是通用语义抽取。方法适用性还由`core.py`的`applicable()`判断；仅增加一张方法知识卡，不能自动获得新算法支持。
+NL4Opt记录编号依次为`1884763091`、`1771352861`、`-725478241`，来源是[固定版本数据](https://github.com/nl4opt/nl4opt-competition/blob/49f1e0d66b7fdcd33305a7f281c2a7c13f5620ea/generation_data/test.jsonl)。工人分配依据[OR-Tools官方教程](https://developers.google.com/optimization/assignment/assignment_example)整理。三道NL4Opt题的整数约定由Demo明确补充，不冒充原始整数标注。
 
-### 4. core.py：从交接材料到模板实例
+参考解与核验证据由Demo另行准备，不意味着任务一已完成求解。人工复核状态仍为pending；来源和使用条件见`THIRD_PARTY_NOTICES.md`。
 
-这是理解任务二最先需要阅读的核心文件。
+## 3. 三类模板
+
+| 类别 | 视图 | 模型输入 | 输出 |
+|---|---|---|---|
+| 问题理解 | understanding | 题干、补充条件、实体次序、空字段约定 | 结构化问题和缺失项 |
+| 方法选择 | method | 已核验问题、求解要求、候选知识卡 | 方法编号、条件及说明 |
+| 工具使用 | call | 问题参数、已选方法、接口说明 | 工具名称及arguments |
+| 工具使用 | result | 问题、实际工具返回、状态定义 | 方案、目标值、终止状态与后续处理 |
+
+每题分别测试四个视图，共16个。独立测试使用已准备输入，后续视图不必等待模型读题成功，便于定位各层错误。额外串联测试使用上一步实际输出，失败即停止，不换入参考答案。
+
+工人分配例子：统一记录保存工人、任务及费用矩阵；方法模板允许专用指派或MILP；调用模板要求矩阵与实体顺序不变；返回模板核对实际状态、分配方案和成本。专用指派使用SciPy的修改版Jonker–Volgenant实现，不笼统称为匈牙利算法。
+
+## 4. 代码结构与作用
+
+按职责保留代码目录和已有命令；详细说明从首页拆出，见[文档导航](docs/README.md)。
 
 ```text
-【题干 inputs + 已整理问题 problems + 参考资料 references】
-                         ↓ archive()
-【临时档案：统一字段、来源、补充条件和缺失项】
-                         ↓ instantiate()
-【按学习目标分成 input / process / target / evidence】
-                         ↓ messages()
-【只取输入白名单，加上模板指令，生成模型请求】
+run_templates.py      任务二主入口
+task2/                模板、执行环路、求解工具及报告
+configs/task2/        字段映射、模板定义和方法知识卡
+demo/                 复用的基础模块，以及保留的旧流程
+data/                 题干、结构化问题、独立参考
+tests/                自动化测试
+reports/              可提交的实测摘要
+docs/                 详细讲解与输入阅读副本
+scripts/              辅助导出脚本
+outputs/              本机完整记录，被Git忽略
 ```
 
-| 函数 | 作用及边界 |
+| 模块 | 关键作用 |
 |---|---|
-| `archive()` | 读取已有案例并组合临时档案；明确记录它不是任务一的真实交付 |
-| `map_fields()` | 按配置检查字段和类型，生成统一表达及映射操作记录 |
-| `applicable()` | 根据当前已支持的问题结构确定可接受方法 |
-| `context()` | 根据方法、问题类型及版本提供接口说明；不检索当前题的参考解 |
-| `instantiate()` | 把同一档案整理为某一种学习视图，包括输入、过程、目标、证据 |
-| `messages()` | 核对版本及白名单，只把`roles.input`放入用户消息 |
-| `export_views()` | 导出“指令—输入—目标”和角色消息两种JSONL示例 |
-| `check_exports()` | 读回导出文件，核对内容和角色是否保持一致 |
-
-四种角色的用途不同：`input`供模型作答，`process`记录字段转换等可核对操作，`target`是预期输出，`evidence`保存来源及核验证据。**整个档案不能直接作为模型输入。** 导出文件包含目标答案，供模板交付演示使用；在线运行不读取它来替模型作答，导出也不等于已经得到人工验收的训练集。
-
-三类模板对应四种视图：
-
-| 类别 | 代码中的form | 输入与输出 |
-|---|---|---|
-| 问题理解 | `understanding` | 题干、补充条件与字段约定 → 结构化问题 |
-| 方法选择 | `method` | 已整理问题、求解要求与候选知识卡 → 方法及条件依据 |
-| 工具使用 | `call` | 问题参数、已选方法与接口说明 → 工具名称和参数 |
-| 工具使用 | `result` | 问题与真实工具返回 → 状态、结果及后续处理 |
-
-### 5. workflow.py：组织整个实验
-
-`prepare()`调用`archive()`准备四题，再通过`fixture_call()`构造准备阶段的调用，交给求解器执行并独立核验。得到的实际返回用于单独测试“返回解读”。然后为每题建立四个视图，保存`instances.json`和导出文件。
-
-这里的准备阶段调用由程序构造，**不能算成模型成功调用工具**。真正考查模型构造调用，是之后`runtime.py`运行`call`视图的时候。
-
-`validate()`检查版本、输入隔离、目标接口、导出往返以及跨案例复用。它会修改隐藏角色后比较模型消息是否不变，以检查参考信息是否泄漏。`fault_checks()`注入缺字段、维度错误、矩阵顺序错误和版本不匹配等错误，确认检查程序能够阻止它们；这些不是模型真实错误。
-
-独立测试与串联测试不同：
+| `run_templates.py` | 调度instantiate、validate、run、report、probe，选择案例与后端 |
+| `task2/core.py` | archive整理档案；instantiate分角色；messages只取白名单；导出两种JSONL |
+| `task2/workflow.py` | 准备实例和真实求解返回，检查隔离与复用，运行串联及人工故障测试 |
+| `task2/runtime.py` | run_view执行环路；check_online在线检查；grade独立评分 |
+| `task2/tools.py` | 校验调用，在限时子进程执行SciPy求解，不执行模型生成代码 |
+| `demo/backend.py`、`model_worker.py` | 在独立环境加载本地0.5B并生成回答 |
+| `demo/ollama_backend.py` | 通过HTTP访问已有Ollama服务，不下载模型 |
+| `demo/validation.py`、`evaluation.py` | 格式、类型和维度检查；原约束、目标重算及参考对齐 |
+| `task2/report.py`、`compare.py` | 从真实记录生成单次报告及模型对比 |
 
 ```text
-独立测试：
-【已准备档案】→【分别测试四种视图】→【定位每种模板的表现】
-
-run_chain()串联测试：
-【问题理解实际输出】→【方法选择实际输出】
-          →【构造调用并真实执行】→【解读本次返回】
-任一步未通过独立核验 → 停止，并记录下游未执行
-```
-
-独立测试的后续视图不必等待模型读题成功，便于区分失败发生在哪一层；串联流程则使用上一步的实际结果，不以参考答案替换失败输出。
-
-### 6. runtime.py：模型运行、反馈和判分
-
-`run_view()`是单个模板的执行环路，也是任务二Harness的核心部分。Harness不是单个文件：它还依赖`core.py`组织输入、`workflow.py`调度，以及`tools.py`执行工具。
-
-```text
-【messages()生成受控请求】
+core.messages：生成受控请求
              ↓
-【backend.generate()调用模型】
+backend.generate：模型回答
              ↓
-【解析JSON + check_online()在线检查】
-       ↓ 失败                    ↓ 通过
-【返回具体接口错误】       【call视图执行工具；其他视图不执行】
-       ↓                        ↓
-【最多修正2次】            【结束在线尝试】
-       └─────────────┬───────────┘
-                     ↓
-【grade()读取独立参考，评分并保存每轮记录】
+runtime.check_online：仅使用可见信息检查
+   失败 → 反馈具体错误，最多修正2次
+   通过 → call视图执行tools.solve；其他视图结束
+             ↓
+runtime.grade：隐藏参考独立判分，不把答案反馈给模型
 ```
 
-`check_online()`只用当前模板可见的输入和规则。它检查结构、实体顺序、方法条件、参数是否忠于输入，以及返回状态和数值是否一致。通过接口检查，不等于题意一定理解正确。
+`mappings.json`规定字段映射，`templates.json`规定输入和指令，`methods.json`提供方法知识。增加算法还需更新适用规则、工具注册及测试，不是只增加知识卡。
 
-`grade()`在在线尝试结束后使用参考资料判分。隐藏参考答案不会进入反馈，也不决定单个视图的重试次数。因此，模型生成了格式正确但整数类型错误的问题时，可能在线通过、独立核验失败；程序不会偷偷把标准答案提示给模型。
+`demo/`不是纯历史目录，任务二仍复用其中的模块。根目录旧入口`run_demo.py`、`run_fault_checks.py`和`check_environment.py`保留兼容，不计入本轮主流程。
 
-结果中的`first_correct`是首轮独立评分，`final_correct`是最终评分，`feedback_repaired`表示同一次运行经反馈修正后通过。方法和结果中的开放文字解释仍需人工复核，不能由结构检查证明全部正确。
+## 5. 实测结果
 
-### 7. tools.py与demo目录：求解及基础能力
+以下是已保存的v1.1开发题实测，**不是未见测试集或总体正确率**。[实测摘要](reports/results-summary.json)提供每个视图成绩、来源哈希和比较条件；完整轨迹仍在本机outputs，不随整理上传。
 
-`task2/tools.py`将已注册的工具调用转换为求解任务。`call_problem()`恢复并检查问题结构，`solve_direct()`调用SciPy，`solve()`通过子进程隔离执行并限制时间。不执行模型生成的任意Python代码。
+| 指标 | Qwen2.5-0.5B | qwen2.5:14b |
+|---|---:|---:|
+| 独立视图 | 16 | 16 |
+| 首轮原始JSON合规 | 9/16 | 16/16 |
+| 首轮在线检查通过 | 6/16 | 16/16 |
+| 首轮独立核验通过 | 6/16 | 15/16 |
+| 最终独立核验通过 | 6/16 | 15/16 |
+| 真实反馈修复成功 | 0 | 0 |
+| 尝试总数，含修正 | 36 | 16 |
+| 模型构造调用后实际工具执行 | 1 | 4 |
+| 工人分配串联 | 未通过 | 通过 |
+| 独立视图总耗时，含修正 | 328.529秒 | 252.695秒 |
 
-当前专用指派工具使用`linear_sum_assignment`的修改版Jonker–Volgenant实现；MILP工具使用SciPy的`milp`接口及HiGHS求解能力。模型负责填写调用，不负责代替求解器计算最优解。
+| 视图最终通过数 | 0.5B | 14B |
+|---|---:|---:|
+| 问题理解 | 0/4 | 3/4 |
+| 方法选择 | 4/4 | 4/4 |
+| 调用构造 | 1/4 | 4/4 |
+| 返回解读 | 1/4 | 4/4 |
 
-**`demo/`虽然沿用旧目录名，但其中不少文件仍服务于任务二，不能整体删除。**
+结果解释：
 
-| 文件 | 当前作用 |
-|---|---|
-| `demo/backend.py` | 本地模型适配器`LocalQwen`，通过子进程调用模型环境；定义共同的模型错误类型 |
-| `demo/model_worker.py` | 在模型环境中加载本地权重、执行生成，返回文本和运行信息 |
-| `demo/ollama_backend.py` | `OllamaModel`经HTTP访问模型服务；本机可通过SSH隧道连接服务器 |
-| `demo/validation.py` | JSON解析、Schema、类型和维度等检查；任务二继续复用 |
-| `demo/evaluation.py` | 问题对齐、原约束检查、目标值复算及参考结果核验 |
-| `demo/solver.py` | 旧求解流程；其中`compile_model()`仍被任务二工具复用 |
-| `demo/harness.py` | 旧Demo的运行环路，不是任务二的主环路 |
-| `demo/prompts.py` | 旧Demo提示；任务二的提示由模板配置与`core.messages()`组织 |
+- 0.5B出现JSON未闭合、漏字段、约束提取及状态处理错误；部分反馈后退化，不能宣称纠错必然有效。
+- 14B将打印机题明确要求的整数变量写成连续变量。即使最优值碰巧相同，仍判建模错误。
+- 14B成功视图均首轮通过，不是反馈修复；失败视图在线检查已通过，没有以隐藏参考触发重试。
+- 部分方法选择只有一个适用候选，成功不证明复杂算法选择能力。开放文字解释仍待人工复核。
+- 配置哈希相同；12个首轮请求完全一致，4个返回解读请求只在工具耗时字段不同。硬件、推理框架及量化不同，14B为Q4_K_M，不能把差异全部归因于参数规模，耗时也不是纯推理速度对比。
 
-切换0.5B和14B主要改变模型适配器，不应为了提高成绩而同时放松模板规则或核验标准。
+保存的自动化测试报告为**143项通过，0失败、0错误、0跳过**。这是代码检查数量，不是143道模型题。覆盖输入隔离、字段类型、参数顺序、异常分支、求解和报告等。人工故障单独统计，模拟超时不冒充真实运行超时。
 
-### 8. 记录、报告和测试
+## 6. 快速运行
 
-| 文件或目录 | 作用 |
-|---|---|
-| `outputs/<运行目录>/instances.json` | 本次档案、模板视图、准备阶段工具返回与配置哈希 |
-| `outputs/<运行目录>/validation.json` | 模板工程检查结果，不是模型成绩 |
-| `outputs/<运行目录>/results.json` | 实际请求、原始回答、反馈、工具返回与评分 |
-| `task2/report.py` | 把单次结果整理为Markdown和HTML，不重新调用模型 |
-| `task2/compare.py` | 比较两份运行结果、输入差异、首轮与最终表现等 |
-| `scripts/export_explanation_inputs.py` | 从已保存实测中拆出阅读用JSON，并核对其与实际请求一致；不重新生成答案 |
-| `tests/test_task2.py` | 任务二模板、隔离、规则、工具及运行流程测试 |
-| `tests/test_demo.py` | 基础模块与旧流程回归测试 |
-| `tests/test_ollama_backend.py` | 服务适配器的请求、异常和接入边界测试 |
-| `tests/test_comparison.py` | 对比统计、输入差异与报告逻辑测试 |
-
-自动化测试和真实模型实测是两种证据：测试通过说明所覆盖的代码行为符合预期，不代表模型对全部题目作答正确。
-
-### 9. 建议阅读顺序与修改位置
-
-建议只拿工人分配题顺着看一次：
-
-```text
-【data/inputs/assignment.json：原题】
-  →【data/problems/assignment.json：已整理问题】
-  →【configs/task2/templates.json：各模板能看什么】
-  →【core.py：archive → instantiate → messages】
-  →【runtime.py：run_view → check_online → grade】
-  →【tools.py：调用怎样变成真实求解】
-  →【outputs中的results.json：实际发生了什么】
-```
-
-先弄清输入、目标和证据的边界，再读模型适配器的HTTP或子进程细节，不必从头逐行读完全部文件。
-
-后续修改时：输入字段和提示主要看`templates.json`与`core.py`；检查和反馈看`runtime.py`；增加方法需要同时处理知识卡、`applicable()`、工具注册及测试；接入模型看适配器；增加题目需要准备来源、结构化问题和独立参考，并调整案例登记与覆盖测试，不是只放入一段题干。
-
-## 保留的旧Demo
-
-公开民用优化教学Demo：从英文描述或结构化JSON开始，经过校验、固定工具求解、有限反馈修正和独立核验，留下可检查的运行记录。
-
-**这不是正式项目的全部实现，也不验证军事用途。** 只使用5道公开生产、广告、工人分配和配送练习。不导入合同或想定，不微调，不调用付费API，不执行模型生成的Python。
-
-## 先看什么
-
-1. [本次实测结果](docs/本次实测结果.md)：实际跑通什么、失败在哪里、证据位置。
-2. [从一道题读懂代码](docs/从一道题读懂代码.md)：字段、输入输出、函数和真实案例。
-3. [数据来源与五道题](docs/数据来源与五道题.md)：原始编号、数学模型、整数约定和参考结果。
-4. [过程记录与待确认](docs/过程记录与待确认.md)：困难、处理办法和后续讨论事项。
-
-## 本机直接运行
-
-在VS Code打开本仓库，在PowerShell终端运行。已建立新环境，不需要先激活，也不需要重复安装PyTorch。
-
-```powershell
-Set-Location 'G:\研究生内容\研0\OR\optimization-learning-demo'
-.\.venv\Scripts\python.exe check_environment.py
-.\.venv\Scripts\python.exe run_demo.py --entry json --case printers --require-success
-.\.venv\Scripts\python.exe run_demo.py --entry nl --case assignment
-.\.venv\Scripts\python.exe run_demo.py --entry both --case all
-```
-
-每次新建 `outputs/时间戳/`，终端最后打印 `SUMMARY.md` 路径。先读摘要，再看 `assignment_nl.json` 等完整轨迹。默认退出码0只表示已生成报告，不表示题目全部答对；`--require-success` 会把任一核验失败变为非零退出码。
-
-`json` 不调用模型；`nl` 调用本地Qwen；`both` 分别运行、分别统计。`--retries 0` 禁用反馈；默认最多2次修正，即最多3次模型回答。输出目录不覆盖先前运行。
-
-## 换一台电脑
-
-求解与测试使用Python 3.12。在仓库建立独立环境：
+在仓库根目录使用Python 3.12准备环境：
 
 ```powershell
 py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
-.\.venv\Scripts\python.exe run_demo.py --entry json --case all --require-success
-```
-
-自然语言入口另需已安装PyTorch和Transformers的环境，以及完整本地Qwen2.5-0.5B-Instruct权重。本机复用了已有环境，没有修改旧环境；其他电脑可显式配置：
-
-```powershell
-$env:DEMO_MODEL_PYTHON = 'D:\your-model-env\Scripts\python.exe'
-$env:DEMO_MODEL_PATH = 'D:\your-local-Qwen2.5-0.5B-Instruct'
-.\.venv\Scripts\python.exe check_environment.py
-.\.venv\Scripts\python.exe run_demo.py --entry nl --case assignment
-```
-
-也可用 `--model-python`、`--model-path`。脚本不自动下载权重。本机已验证的模型环境是PyTorch 2.5.1+cu121、Transformers 4.57.6，模型版本与显存等见轨迹的 `model_metadata`。当前模型worker要求CUDA，没有实现CPU推理回退；无CUDA会明确报错。环境检查需要模型和求解两端均可用才返回0；仅模型缺失不妨碍运行JSON入口。
-
-## 流程与边界
-
-```text
-公开英文题干 -> 公开关键词选模板、给定实体ID -> Qwen提取problem
-                                                        |
-已整理的JSON问题 ----------------------------------------+
-                                                        v
-Schema/维度/范围/引用检查 -> 固定工具调用 -> SciPy求解 -> 保存实际结果
-           |
-      接口错误反馈，最多2次修正
-
-在线环路结束 -> 独立参考评估 -> 中文摘要与完整轨迹
-```
-
-自然语言入口使用受限辅助：题干出现worker/warehouse时选分配/配送模板，其余限定在线性资源练习范围内；实体次序预先给定。提示提供另一道虚构教学例题演示格式。**验证的是给定模板后的读题填参，不是自由算法选择或通用类别识别。** 5题均用于开发调试，不是未见测试集。
-
-工具只有 `solve_linear`、`solve_assignment`、`solve_transportation`。SciPy/HiGHS的LP或MILP处理实际求解。分配接口固定每人至多一项、每项恰好一人；配送固定供应上限、需求下限，不含车辆路线。
-
-Schema通过不等于题意正确。离线评估另检查参考模型对齐、原题约束、整数性、目标重算和参考最优值；多个最优解不要求逐项相同。单位只检查标签，数学等价识别也只支持有限形式，均不能替代人工核对。
-
-接口错误可以反馈，隐藏参考解和最优值不能反馈。无解时不删条件；超时和重试耗尽均保留失败状态。报错反馈不保证提高正确率。
-
-## 五道题
-
-|编号|内容|已整理JSON的参考核验结果|
-|---|---|---|
-|printers|NL4Opt打印机生产|20台彩色、15台黑白，利润5050|
-|bakery|NL4Opt面包房生产|0个面包、3000批饼干，利润9000|
-|advertising|NL4Opt广告预算|无解：最低费用395250超过250000|
-|assignment|OR-Tools五工人四工作|最小成本265|
-|transportation|PuLP两仓五销售点|最小运输成本8600，允许剩余供应|
-
-这不是模型成绩。改写、整数解释和来源见数据说明；再分发事项见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。所有样本人工复核状态仍为 `pending`。
-
-## 测试与人工故障演示
-
-```powershell
 .\.venv\Scripts\python.exe -m pytest -q
-.\.venv\Scripts\python.exe run_fault_checks.py
 ```
 
-测试包括真实求解、独立算术/枚举核验、格式错误、非法工具、参数维度、非法数值、重试上限、无解、无界、模拟超时及答案隔离。人工故障轨迹位于 `outputs/faults_时间/`，标为synthetic；证明的是程序分支可用，不是Qwen真实纠错成功。超时测试采用注入，不能说真实运行曾全部遇到。
+准备模板不调用大模型，但会真实求解，以准备返回解读材料：
 
-## 文件分工
+```powershell
+.\.venv\Scripts\python.exe run_templates.py instantiate --directory outputs/task2_new
+.\.venv\Scripts\python.exe run_templates.py validate --directory outputs/task2_new
+```
 
-|位置|内容|
-|---|---|
-|data/inputs/|公开题干、约定、来源；中文解释不给模型|
-|data/problems/|已整理的问题，用于JSON入口及事后参考评估|
-|data/references/answers.json|参考状态、目标、可行见证与核验依据|
-|demo/prompts.py|公开模板选择、字段规则、独立教学示例|
-|demo/backend.py、model_worker.py|跨环境本地Qwen调用、限时、元数据|
-|demo/validation.py|JSON Schema、数值/维度检查、固定工具白名单|
-|demo/harness.py|在线有界反馈，不读取参考答案|
-|demo/solver.py|模型构造、LP/MILP执行与返回|
-|demo/evaluation.py|独立事后核验，不参与模型反馈|
-|run_demo.py|运行入口、保存过程、生成摘要|
-|tests/|自动化测试，替身与真实模型隔离|
-|outputs/|本机运行记录，默认不提交Git|
+服务器模式要求已有Ollama服务及调用权限。通过SSH隧道转发至本地11435时：
 
-日志只是候选材料。需人工核对原题、建模、参数和执行证据，再按训练任务分离输入与目标；失败回答不直接成为标准答案。
+```powershell
+$env:DEMO_OLLAMA_URL = 'http://127.0.0.1:11435'
+.\.venv\Scripts\python.exe run_templates.py probe --backend ollama
+.\.venv\Scripts\python.exe run_templates.py run --directory outputs/task2_new --backend ollama --model qwen2.5:14b --chain
+```
 
-## GitHub Desktop
+本地模式另需PyTorch、Transformers、CUDA模型环境与已有权重。配置`DEMO_MODEL_PYTHON`、`DEMO_MODEL_PATH`后，使用`run --backend local`。不自动下载权重。两种后端不要复用已有results.json的目录。
 
-本目录已是克隆的仓库。在Desktop中选择它即可；列表中没有时用 **File > Add local repository** 选择本目录，不要克隆到自身里面。在VS Code编辑后，Changes会自动显示变化，不用每次网页上传。
+`--case assignment --form call`只测单个视图。默认首轮加至多两次修正；退出码0表示运行完成，不代表答对。复跑请使用新目录，历史结果不覆盖。
 
-确认修改后自行Commit，再Push origin才上传。本次没有自动提交或推送。首次提交检查Changes，排除密钥、合同、想定、权重、虚拟环境。`.gitignore` 排除了常见本机产物，但不是敏感信息检测器。分享日志时另选公开示例的脱敏记录，不要强制上传整个outputs目录。
+## 7. 阅读顺序与边界
+
+先读本页案例和流程，再阅读[案例与模型对比讲解](docs/任务二训练模板案例流程与模型对比.md)；代码细节见[详细代码说明](docs/代码结构与旧版运行说明.md)，其余资料见[文档导航](docs/README.md)。[输入阅读副本](docs/examples/task2_v11_inputs/)包含交接档案与四种视图输入，交接档案包含参考信息，不应整体发送给模型。
+
+下一步优先完善整数约定测试、更有区分度的方法选择、字段人工复核及统一输入的对照实验。当前未覆盖完整项目场景、问题和算法骨架范围，没有训练，不证明微调收益。
+
+仓库公开不等于开放远程模型服务。不要上传合同、想定、密码、权重或虚拟环境；`.gitignore`不是敏感信息检测工具。源码、公开案例和精选摘要可提交，完整运行日志需另行检查。
