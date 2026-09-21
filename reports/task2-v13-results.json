@@ -1,0 +1,457 @@
+{
+  "template_version": "1.3",
+  "candidate_questions": 12,
+  "verified_cases": 4,
+  "applicable_views": 15,
+  "not_applicable": [
+    {
+      "case_id": "repair_missing",
+      "form": "result",
+      "reason": "missing_data_no_actual_return"
+    }
+  ],
+  "engineering_passed": true,
+  "engineering_checks": 33,
+  "human_review": "pending",
+  "models": {
+    "local": {
+      "status": "completed",
+      "model": "Qwen2.5-0.5B-Instruct",
+      "model_digest": null,
+      "completed_views": 15,
+      "first_correct": 5,
+      "final_correct": 6,
+      "feedback_repaired": 1,
+      "attempts": 34,
+      "first_raw_json": 8,
+      "first_normalized_json": 15,
+      "first_online_pass": 5,
+      "tool_executions": 1,
+      "elapsed_seconds": 324.642,
+      "rows": [
+        {
+          "view_id": "glass:understanding",
+          "first_correct": false,
+          "final_correct": false,
+          "feedback_repaired": false,
+          "elapsed_seconds": 46.538,
+          "attempts": 3,
+          "failure_paths": [
+            "problem_type",
+            "entities",
+            "objective",
+            "units",
+            "parameters.handoff_cost_matrix",
+            "parameters.objective_coefficients",
+            "parameters.variable_type",
+            "parameters.constraints",
+            "parameters.lower_bounds",
+            "parameters.upper_bounds"
+          ],
+          "reason": "online_check_failed",
+          "last_status": "validation_failed"
+        },
+        {
+          "view_id": "glass:method",
+          "first_correct": true,
+          "final_correct": true,
+          "feedback_repaired": false,
+          "elapsed_seconds": 8.996,
+          "attempts": 1,
+          "failure_paths": [],
+          "reason": "method_and_condition_ids; prose not automatically certified",
+          "last_status": "online_pass"
+        },
+        {
+          "view_id": "glass:call",
+          "first_correct": false,
+          "final_correct": false,
+          "feedback_repaired": false,
+          "elapsed_seconds": 31.613,
+          "attempts": 3,
+          "failure_paths": [],
+          "reason": "online_check_failed",
+          "last_status": "validation_failed"
+        },
+        {
+          "view_id": "glass:result",
+          "first_correct": false,
+          "final_correct": false,
+          "feedback_repaired": false,
+          "elapsed_seconds": 25.557,
+          "attempts": 3,
+          "failure_paths": [],
+          "reason": "online_check_failed",
+          "last_status": "validation_failed"
+        },
+        {
+          "view_id": "library_assignment:understanding",
+          "first_correct": false,
+          "final_correct": false,
+          "feedback_repaired": false,
+          "elapsed_seconds": 26.107,
+          "attempts": 3,
+          "failure_paths": [
+            "problem_type",
+            "entities",
+            "units",
+            "missing_information",
+            "parameters.cost_matrix",
+            "parameters.handoff",
+            "parameters.tasks"
+          ],
+          "reason": "online_check_failed",
+          "last_status": "validation_failed"
+        },
+        {
+          "view_id": "library_assignment:method",
+          "first_correct": true,
+          "final_correct": true,
+          "feedback_repaired": false,
+          "elapsed_seconds": 8.969,
+          "attempts": 1,
+          "failure_paths": [],
+          "reason": "method_and_condition_ids; prose not automatically certified",
+          "last_status": "online_pass"
+        },
+        {
+          "view_id": "library_assignment:call",
+          "first_correct": true,
+          "final_correct": true,
+          "feedback_repaired": false,
+          "elapsed_seconds": 11.191,
+          "attempts": 1,
+          "failure_paths": [],
+          "reason": null,
+          "last_status": "online_pass"
+        },
+        {
+          "view_id": "library_assignment:result",
+          "first_correct": false,
+          "final_correct": false,
+          "feedback_repaired": false,
+          "elapsed_seconds": 28.398,
+          "attempts": 3,
+          "failure_paths": [],
+          "reason": "online_check_failed",
+          "last_status": "validation_failed"
+        },
+        {
+          "view_id": "book_budget:understanding",
+          "first_correct": false,
+          "final_correct": false,
+          "feedback_repaired": false,
+          "elapsed_seconds": 24.691,
+          "attempts": 3,
+          "failure_paths": [
+            "problem_type",
+            "entities",
+            "objective",
+            "units",
+            "missing_information",
+            "parameters.objective_coefficients",
+            "parameters.variable_type",
+            "parameters.constraints",
+            "parameters.lower_bounds",
+            "parameters.upper_bounds"
+          ],
+          "reason": "online_check_failed",
+          "last_status": "validation_failed"
+        },
+        {
+          "view_id": "book_budget:method",
+          "first_correct": true,
+          "final_correct": true,
+          "feedback_repaired": false,
+          "elapsed_seconds": 9.592,
+          "attempts": 1,
+          "failure_paths": [],
+          "reason": "method_and_condition_ids; prose not automatically certified",
+          "last_status": "online_pass"
+        },
+        {
+          "view_id": "book_budget:call",
+          "first_correct": false,
+          "final_correct": false,
+          "feedback_repaired": false,
+          "elapsed_seconds": 31.432,
+          "attempts": 3,
+          "failure_paths": [],
+          "reason": "online_check_failed",
+          "last_status": "validation_failed"
+        },
+        {
+          "view_id": "book_budget:result",
+          "first_correct": true,
+          "final_correct": true,
+          "feedback_repaired": false,
+          "elapsed_seconds": 8.231,
+          "attempts": 1,
+          "failure_paths": [],
+          "reason": null,
+          "last_status": "online_pass"
+        },
+        {
+          "view_id": "repair_missing:understanding",
+          "first_correct": false,
+          "final_correct": false,
+          "feedback_repaired": false,
+          "elapsed_seconds": 26.078,
+          "attempts": 3,
+          "failure_paths": [
+            "problem_type",
+            "entities",
+            "units",
+            "missing_information",
+            "parameters.tasks"
+          ],
+          "reason": "online_check_failed",
+          "last_status": "validation_failed"
+        },
+        {
+          "view_id": "repair_missing:method",
+          "first_correct": false,
+          "final_correct": true,
+          "feedback_repaired": true,
+          "elapsed_seconds": 14.406,
+          "attempts": 2,
+          "failure_paths": [],
+          "reason": "missing_request; no_tool_execution",
+          "last_status": "online_pass"
+        },
+        {
+          "view_id": "repair_missing:call",
+          "first_correct": false,
+          "final_correct": false,
+          "feedback_repaired": false,
+          "elapsed_seconds": 22.843,
+          "attempts": 3,
+          "failure_paths": [],
+          "reason": "online_check_failed",
+          "last_status": "validation_failed"
+        }
+      ],
+      "not_run": []
+    },
+    "ollama": {
+      "status": "completed",
+      "model": "qwen2.5:14b",
+      "model_digest": "7cdf5a0187d5c58cc5d369b255592f7841d1c4696d45a8c8a9489440385b22f6",
+      "completed_views": 15,
+      "first_correct": 14,
+      "final_correct": 14,
+      "feedback_repaired": 0,
+      "attempts": 17,
+      "first_raw_json": 15,
+      "first_normalized_json": 15,
+      "first_online_pass": 14,
+      "tool_executions": 3,
+      "elapsed_seconds": 77.034,
+      "rows": [
+        {
+          "view_id": "glass:understanding",
+          "first_correct": true,
+          "final_correct": true,
+          "feedback_repaired": false,
+          "elapsed_seconds": 8.919,
+          "attempts": 1,
+          "failure_paths": [],
+          "reason": "conservative_reference_alignment",
+          "last_status": "online_pass"
+        },
+        {
+          "view_id": "glass:method",
+          "first_correct": true,
+          "final_correct": true,
+          "feedback_repaired": false,
+          "elapsed_seconds": 1.702,
+          "attempts": 1,
+          "failure_paths": [],
+          "reason": "method_and_condition_ids; prose not automatically certified",
+          "last_status": "online_pass"
+        },
+        {
+          "view_id": "glass:call",
+          "first_correct": true,
+          "final_correct": true,
+          "feedback_repaired": false,
+          "elapsed_seconds": 8.631,
+          "attempts": 1,
+          "failure_paths": [],
+          "reason": null,
+          "last_status": "online_pass"
+        },
+        {
+          "view_id": "glass:result",
+          "first_correct": true,
+          "final_correct": true,
+          "feedback_repaired": false,
+          "elapsed_seconds": 4.661,
+          "attempts": 1,
+          "failure_paths": [],
+          "reason": null,
+          "last_status": "online_pass"
+        },
+        {
+          "view_id": "library_assignment:understanding",
+          "first_correct": true,
+          "final_correct": true,
+          "feedback_repaired": false,
+          "elapsed_seconds": 3.722,
+          "attempts": 1,
+          "failure_paths": [],
+          "reason": "conservative_reference_alignment",
+          "last_status": "online_pass"
+        },
+        {
+          "view_id": "library_assignment:method",
+          "first_correct": true,
+          "final_correct": true,
+          "feedback_repaired": false,
+          "elapsed_seconds": 4.098,
+          "attempts": 1,
+          "failure_paths": [],
+          "reason": "method_and_condition_ids; prose not automatically certified",
+          "last_status": "online_pass"
+        },
+        {
+          "view_id": "library_assignment:call",
+          "first_correct": true,
+          "final_correct": true,
+          "feedback_repaired": false,
+          "elapsed_seconds": 6.244,
+          "attempts": 1,
+          "failure_paths": [],
+          "reason": null,
+          "last_status": "online_pass"
+        },
+        {
+          "view_id": "library_assignment:result",
+          "first_correct": true,
+          "final_correct": true,
+          "feedback_repaired": false,
+          "elapsed_seconds": 6.191,
+          "attempts": 1,
+          "failure_paths": [],
+          "reason": null,
+          "last_status": "online_pass"
+        },
+        {
+          "view_id": "book_budget:understanding",
+          "first_correct": true,
+          "final_correct": true,
+          "feedback_repaired": false,
+          "elapsed_seconds": 4.791,
+          "attempts": 1,
+          "failure_paths": [],
+          "reason": "conservative_reference_alignment",
+          "last_status": "online_pass"
+        },
+        {
+          "view_id": "book_budget:method",
+          "first_correct": true,
+          "final_correct": true,
+          "feedback_repaired": false,
+          "elapsed_seconds": 3.328,
+          "attempts": 1,
+          "failure_paths": [],
+          "reason": "method_and_condition_ids; prose not automatically certified",
+          "last_status": "online_pass"
+        },
+        {
+          "view_id": "book_budget:call",
+          "first_correct": true,
+          "final_correct": true,
+          "feedback_repaired": false,
+          "elapsed_seconds": 8.492,
+          "attempts": 1,
+          "failure_paths": [],
+          "reason": null,
+          "last_status": "online_pass"
+        },
+        {
+          "view_id": "book_budget:result",
+          "first_correct": true,
+          "final_correct": true,
+          "feedback_repaired": false,
+          "elapsed_seconds": 4.981,
+          "attempts": 1,
+          "failure_paths": [],
+          "reason": null,
+          "last_status": "online_pass"
+        },
+        {
+          "view_id": "repair_missing:understanding",
+          "first_correct": false,
+          "final_correct": false,
+          "feedback_repaired": false,
+          "elapsed_seconds": 10.259,
+          "attempts": 3,
+          "failure_paths": [
+            "parameters.tasks"
+          ],
+          "reason": "online_check_failed",
+          "last_status": "validation_failed"
+        },
+        {
+          "view_id": "repair_missing:method",
+          "first_correct": true,
+          "final_correct": true,
+          "feedback_repaired": false,
+          "elapsed_seconds": 0.558,
+          "attempts": 1,
+          "failure_paths": [],
+          "reason": "missing_request; no_tool_execution",
+          "last_status": "online_pass"
+        },
+        {
+          "view_id": "repair_missing:call",
+          "first_correct": true,
+          "final_correct": true,
+          "feedback_repaired": false,
+          "elapsed_seconds": 0.457,
+          "attempts": 1,
+          "failure_paths": [],
+          "reason": "missing_request; no_tool_execution",
+          "last_status": "online_pass"
+        }
+      ],
+      "not_run": []
+    }
+  },
+  "input_hashes": {
+    "glass:understanding": "113566b12cbe177eab45fd64ed572aeb68905e263c92272881c872d828ee56e1",
+    "glass:method": "bd1e662786a0bcf99373e1fae6467d4d8ea4ef047afb9743bbd144a224603928",
+    "glass:call": "0ee70cd0551cda5f804b9c0f864f93639a9e9087f3fd502992a369d99ed7512e",
+    "glass:result": "37dd40e69e019627ce40223c925fe5d496a2d557237e20368085f140407b5f99",
+    "library_assignment:understanding": "2592b81d4ad5ba97312b5ddbcf4ee3ebeeeafd5a88b68fab85e1fee05aa6fdca",
+    "library_assignment:method": "d5ff0f697fb872033da76de5895f918e6405f0a1dbf53fd6c1260be56e636038",
+    "library_assignment:call": "f1dbbf58122328c97fd9b3d0eba95e51c5ac51ff12b2f9af07213c3b27cc31bc",
+    "library_assignment:result": "9416dd248e6545214f2dead333b4e6cce402400acc612ec804dcd816ef83440c",
+    "book_budget:understanding": "9e6cdc611e27184eec240d5e0ef403cabdc161b0f8078d52f722df11b766faac",
+    "book_budget:method": "1fcedbdc521adffde363d1721a92631c1ffa7da3fbf1c5f6c7fc732a34056c06",
+    "book_budget:call": "bbc9d5d997ba4cb97bb8171bca77719c63c8c322336daae705eb1d0251fc6657",
+    "book_budget:result": "ba30da370f97867737005338ccf9f96850474c522c7d5ba0baa5fac80c85b2c1",
+    "repair_missing:understanding": "51f4ec1499ae0bab3de48dfd7397c47c01067235712c48ad0225f572fb34b13e",
+    "repair_missing:method": "7dc804180673dfe42327f64105c6640e1358e2b078f7b2bca274a360d9e39613",
+    "repair_missing:call": "eec2eb8d5fd236f95841d8c6ef16640a806b70c743afc2caeae3f4ca37d68395"
+  },
+  "same_frozen_inputs": true,
+  "usage": "frozen_before_run_development_cases; not_population_accuracy",
+  "matched_pair_views": 15,
+  "comparison_complete": true,
+  "tests": {
+    "tests": 207,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "source_sha256": {
+    "instances": "0585212defacf66bd37a2274cf2412589c16841e221533089a8ae6432ac12d39",
+    "validation": "651e6b30cff213afb9e58aa16b82c5ce5c2184afff02407a52a3b291367cb616",
+    "results": "b4e6d311aad8bf19ebb3161035058e2fe30f2d11e28010b918ca1fcc82fa5ab5",
+    "tests": "4a22c16388571349192880e27f2e02b07ab36368b716a57763b4c0407551f4c2",
+    "catalog": "869fe1c64f03ade93f9e803a8a42b70f23628132fc4ca357f2218b14c802ebfd",
+    "handoffs": "abf0a5dfdc130a43ab4652b0cbf792a957d5480518b5bca7f0867e87ba975f94"
+  }
+}

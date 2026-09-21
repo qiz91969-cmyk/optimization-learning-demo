@@ -1,0 +1,58 @@
+{
+  "version": "1.3",
+  "human_review": "pending",
+  "records": [
+    {
+      "id": "glass",
+      "problem": {
+        "problem_type": "linear", "objective": "maximize", "entities": ["regular", "tempered"],
+        "units": {"quantity": "panes", "objective": "dollars"},
+        "parameters": {
+          "objective_coefficients": [8,10], "variable_type": "integer", "lower_bounds": [0,0], "upper_bounds": [null,null],
+          "constraints": [
+            {"name": "heating", "coefficients": [3,5], "sense": "<=", "rhs": 300, "unit": "minutes"},
+            {"name": "cooling", "coefficients": [5,8], "sense": "<=", "rhs": 300, "unit": "minutes"}
+          ]
+        }, "missing_information": []
+      },
+      "answer": {"status": "optimal", "objective_value": 480, "human_review": "pending"},
+      "certificate": "Enumerate regular=0..100 and tempered=0..60 directly from statement, test both machine limits, maximize 8r+10t. Witness (60,0). Bounds cover all feasible points by heating constraint."
+    },
+    {
+      "id": "library_assignment",
+      "problem": {
+        "problem_type": "assignment", "objective": "minimize", "entities": ["Ada","Bo","Cy","Di"],
+        "units": {"quantity": "assignments", "objective": "dollars"},
+        "parameters": {"tasks": ["catalog","shelve","desk"], "cost_matrix": [[9,2,7],[6,4,3],[5,8,1],[7,6,9]]}, "missing_information": []
+      },
+      "answer": {"status": "optimal", "objective_value": 9, "human_review": "pending"},
+      "certificate": "Enumerate 4P3=24 injective worker choices for the three tasks. Witness Bo/catalog, Ada/shelve, Cy/desk; Di idle; cost 6+2+1=9."
+    },
+    {
+      "id": "book_budget",
+      "problem": {
+        "problem_type": "linear", "objective": "maximize", "entities": ["standard","extended"],
+        "units": {"quantity": "bundles", "objective": "points"},
+        "parameters": {
+          "objective_coefficients": [6,9], "variable_type": "integer", "lower_bounds": [3,4], "upper_bounds": [null,null],
+          "constraints": [
+            {"name": "budget", "coefficients": [30,50], "sense": "<=", "rhs": 250, "unit": "dollars"},
+            {"name": "reading", "coefficients": [2,1], "sense": ">=", "rhs": 12, "unit": "reading_units"}
+          ]
+        }, "missing_information": []
+      },
+      "answer": {"status": "infeasible", "objective_value": null, "human_review": "pending"},
+      "certificate": "Positive prices and minimum counts imply cost >=30*3+50*4=290>250, regardless of the additional reading constraint. This proves infeasibility without a solver."
+    },
+    {
+      "id": "repair_missing",
+      "problem": {
+        "problem_type": "assignment", "objective": "minimize", "entities": ["Mei","Tao","Wen"],
+        "units": {"quantity": "assignments", "objective": "dollars"},
+        "parameters": {"tasks": ["lighting","shelving"]}, "missing_information": ["parameters.cost_matrix"]
+      },
+      "answer": {"status": "needs_information", "objective_value": null, "human_review": "pending"},
+      "certificate": "The statement expressly supplies no costs. Expected missing path is parameters.cost_matrix. No reference assignment, optimal value, or tool return exists."
+    }
+  ]
+}

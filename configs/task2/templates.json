@@ -1,28 +1,44 @@
 {
-  "version": "1.1",
+  "version": "1.3",
   "templates": {
     "understanding": {
       "category": "problem_understanding", "form": null,
       "input_fields": ["task_text", "supplement", "entity_order", "field_contract"],
       "target": "problem", "validator": "problem_reference_alignment",
-      "instruction": "Extract the optimization problem. Return only a JSON object using the exact keys in field_contract.empty_output. Replace empty fields using the statement and supplement. Read field_contract.rules. Keep entity_order. objective is a STRING: minimize or maximize. Always include missing_information (empty array when nothing is missing). No code, no extra keys."
+      "checker_version": "1.3", "missing_policy": "partial_problem",
+      "output_fields": ["problem_type", "objective", "entities", "units", "parameters", "missing_information"],
+      "output_contract": "Structured problem; absent required fields omitted and listed as sorted full paths in missing_information",
+      "applicability": "Known problem family, task text and output field definitions; incomplete data permitted",
+      "instruction": "Extract the optimization problem using the statement AND supplement. Return only a JSON object. field_contract.empty_output defines allowed fields, not mandatory placeholders: omit any required field not supplied by the input and list its sorted full path in missing_information. Never retain an empty placeholder for a missing parameter. Read field_contract.rules. Keep entity_order. objective is a STRING: minimize or maximize. Respect explicit integer or continuous variable requirements; do not infer integer solely from an object name. Always include missing_information (empty array when nothing is missing). No code, no extra keys."
     },
     "method": {
       "category": "method_selection", "form": null,
       "input_fields": ["problem", "scenario", "requirements", "candidates"],
       "target": "acceptable_methods", "validator": "method_conditions",
-      "instruction": "Choose one applicable method from candidates. Return {\"method_id\": string, \"condition_ids\": [string], \"explanation\": string}. Use exact method and condition identifiers from the selected card. Briefly explain applicability, not performance superiority."
+      "checker_version": "1.3", "missing_policy": "missing_fields",
+      "output_fields": ["method_id", "condition_ids", "explanation"],
+      "output_contract": "method_id, condition_ids, explanation; or missing_fields without a guessed method",
+      "applicability": "Check model structure and candidate conditions; incomplete required data prevents selection in this demo",
+      "instruction": "Choose an applicable method by comparing the problem with candidate conditions and operations; a listed candidate is not necessarily applicable. Return {\"method_id\": string, \"condition_ids\": [string], \"explanation\": string}. Use exact identifiers from the selected card. Explain the model condition that justifies the method, not performance superiority. If problem.missing_information is nonempty, return only {\"missing_fields\": [string]} with those paths."
     },
     "call": {
       "category": "tool_use", "form": "call_construction",
       "input_fields": ["problem", "selected_method", "context"],
       "target": "reference_call", "validator": "interface_and_execution",
+      "checker_version": "1.3", "missing_policy": "missing_fields",
+      "output_fields": ["tool_name", "arguments"],
+      "output_contract": "tool_name and arguments; or missing_fields with no tool execution",
+      "applicability": "Known selected method and compatible interface for complete data; partial data produces a request for information",
       "instruction": "Build a tool call from problem and context. Return exactly {\"tool_name\": string, \"arguments\": {\"objective\": string, \"entities\": array, \"units\": object, \"parameters\": object}}. Copy the problem parameters without changing their meaning or order. Use context.tool_name. If required information is missing, return only {\"missing_fields\": [string]} instead. Do not compute an answer or generate Python."
     },
     "result": {
       "category": "tool_use", "form": "return_interpretation",
       "input_fields": ["problem", "actual_return", "status_definitions"],
       "target": "result_interpretation", "validator": "return_and_recomputation",
+      "checker_version": "1.3", "missing_policy": "not_instantiable",
+      "output_fields": ["status", "objective_value", "values", "optimality_proven", "next_action", "explanation"],
+      "output_contract": "status, objective_value, values, optimality_proven, next_action, explanation",
+      "applicability": "Complete problem and a real tool return; no fabricated return when unavailable",
       "instruction": "Interpret actual_return, not an imagined solution. Return exactly {\"status\": string, \"objective_value\": number or null, \"values\": array or null, \"optimality_proven\": boolean, \"next_action\": string, \"explanation\": string}. Preserve its status, objective_value and values. Choose next_action from status_definitions. Only optimal means optimality_proven=true. For infeasible do not invent a solution. Explain briefly."
     }
   },

@@ -10,26 +10,32 @@ from .runtime import check_online, run_view
 from .tools import solve
 
 
-def prepare(directory, cases=CASES):
-    records, views, fixtures = [], [], []
-    for case in cases:
-        record = archive(case)
+def prepare(directory, cases=CASES, records=None):
+    supplied_records = records
+    records, views, fixtures, unavailable = [], [], [], []
+    for record in (supplied_records if supplied_records is not None else (archive(case) for case in cases)):
+        case = record["id"]
         p = record["unified"]["problem"]
-        call = fixture_call(p, applicable(p)[0])
-        actual = solve(call)
-        check = evaluate_attempt({"problem": p, "solver_result": actual}, p,
-                                 record["unified"]["reference_result"])
-        if not check["verified_against_reference"]:
-            raise ValidationError("Fixture failed independent verification: " + case)
-        fixtures.append({"case_id": case, "origin": "verified_handoff_fixture_not_model_call",
-                         "call": call, "actual_return": actual, "evaluation": check})
+        actual = None
+        if not p["missing_information"]:
+            call = fixture_call(p, applicable(p)[0])
+            actual = solve(call)
+            check = evaluate_attempt({"problem": p, "solver_result": actual}, p,
+                                     record["unified"]["reference_result"])
+            if not check["verified_against_reference"]:
+                raise ValidationError("Fixture failed independent verification: " + case)
+            fixtures.append({"case_id": case, "origin": "verified_handoff_fixture_not_model_call",
+                             "call": call, "actual_return": actual, "evaluation": check})
         records.append(record)
         for form in FORMS:
+            if form == "result" and actual is None:
+                unavailable.append({"case_id": case, "form": form, "reason": "missing_data_no_actual_return"})
+                continue
             view = instantiate(record, form, actual_return=actual)
             view["roles"]["evidence"]["result_origin"] = "verified_handoff_fixture_not_model_call" if form == "result" else None
             views.append(view)
     payload = {"created_at": datetime.now().astimezone().isoformat(), "records": records,
-               "views": views, "fixtures": fixtures,
+               "views": views, "fixtures": fixtures, "unavailable_views": unavailable,
                "config_hashes": {n: digest(config(n)) for n in ("mappings", "templates", "methods")}}
     save(directory / "instances.json", payload)
     export_views(views, directory / "exports")
@@ -65,7 +71,8 @@ def validate(payload, directory):
         record_check(view["id"] + ":role_isolation", isolation)
     record_check("two_export_formats_roundtrip", lambda: check_exports(directory / "exports", payload["views"]))
     def reuse():
-        expected = {(r["id"], f) for r in payload["records"] for f in FORMS}
+        expected = {(r["id"], f) for r in payload["records"] for f in FORMS
+                    if not (f == "result" and r["unified"]["problem"]["missing_information"])}
         actual = {(v["case_id"], v["form"]) for v in payload["views"]}
         if actual != expected or len(actual) != len(payload["views"]):
             raise ValidationError("Cross-case/view reuse coverage mismatch")
@@ -78,7 +85,10 @@ def validate(payload, directory):
 def fault_checks(payload):
     """Synthetic errors are separate from model measurements."""
     views = {(v["case_id"], v["form"]): v for v in payload["views"]}
-    base = views[("assignment", "call")]
+    base = views.get(("assignment", "call"))
+    if base is None or "arguments" not in base["roles"]["target"]:
+        return {"origin": "synthetic_fault_injection_not_Qwen", "results": [],
+                "skipped_reason": "requires_complete_assignment_call"}
     output = deepcopy(base["roles"]["target"])
     variants = []
     bad = deepcopy(output); del bad["arguments"]["units"]
@@ -115,6 +125,10 @@ def run_chain(record, backend, retries=2):
         output = result["attempts"][-1]["output"]
         if form == "understanding":
             problem = output
+            if problem["missing_information"]:
+                return {"case_id": record["id"], "passed": False, "steps": steps,
+                        "stopped_at": "understanding", "state": "needs_information",
+                        "skipped": list(FORMS[index+1:])}
         elif form == "method":
             method = output["method_id"]
         elif form == "call":

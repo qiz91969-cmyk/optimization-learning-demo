@@ -10,6 +10,8 @@ from pathlib import Path
 
 from demo.validation import (ASSIGNMENT, LINEAR, PROBLEM_SCHEMA, ValidationError,
                              validate_problem)
+from .contracts import validate_contracts
+from .handoff import receive_problem, validate_partial
 
 ROOT = Path(__file__).resolve().parents[1]
 CASES = ("assignment", "printers", "bakery", "advertising")
@@ -32,7 +34,8 @@ def digest(value):
 
 
 def config(name):
-    return read(ROOT / "configs/task2" / (name + ".json"))
+    value = read(ROOT / "configs/task2" / (name + ".json"))
+    return validate_contracts(value) if name == "templates" else value
 
 
 def at_path(value, path):
@@ -62,7 +65,9 @@ def map_fields(bundle, specification=None):
 
 
 def applicable(problem):
-    validate_problem(problem)
+    validate_partial(problem)
+    if problem["missing_information"]:
+        return []
     if problem["problem_type"] == "assignment":
         return ["assignment_jv", "highs_milp"]
     if problem["problem_type"] == "linear" and problem["parameters"]["variable_type"] == "integer":
@@ -70,7 +75,7 @@ def applicable(problem):
     return []
 
 
-def context(method_id, problem_type, method_version="1.0", tool_version="1.0"):
+def context(method_id, problem_type, method_version="1.1", tool_version="1.0"):
     """Retrieval key has no case ID, target, reference call or answer."""
     cards = config("methods")
     card = next((x for x in cards["methods"] if x["method_id"] == method_id), None)
@@ -79,7 +84,8 @@ def context(method_id, problem_type, method_version="1.0", tool_version="1.0"):
     if problem_type not in card["tool_names"]:
         raise ValidationError("Method not registered for this problem class")
     return {"context_version": cards["context_version"], "method": {
-                k: deepcopy(card[k]) for k in ("method_id", "version", "name", "condition_ids", "conditions")},
+                k: deepcopy(card[k]) for k in ("method_id", "version", "name", "condition_ids", "conditions",
+                                               "initialization", "core_operation", "constraint_handling", "stopping", "output")},
             "tool_name": card["tool_names"][problem_type], "tool_version": tool_version,
             "arguments_fields": ["objective", "entities", "units", "parameters"],
             "argument_rules": "Copy these four fields from problem exactly. objective is a string; entities is an array; units and parameters are objects. No problem_type or missing_information inside arguments.",
@@ -88,6 +94,9 @@ def context(method_id, problem_type, method_version="1.0", tool_version="1.0"):
 
 
 def fixture_call(problem, method_id):
+    validate_problem(problem)
+    if problem["missing_information"]:
+        raise ValidationError("Cannot execute incomplete problem")
     ctx = context(method_id, problem["problem_type"])
     return {"tool_name": ctx["tool_name"], "arguments": {
         k: deepcopy(problem[k]) for k in ctx["arguments_fields"]}}
@@ -105,19 +114,32 @@ def interpretation(result):
             "explanation": "Interpret only the observed termination status; feasibility and optimality differ."}
 
 
-def archive(case):
-    if case not in CASES:
+def archive(case, public=None, problem=None, answer=None):
+    if case not in CASES and (public is None or problem is None):
         raise ValidationError("Unknown demo case")
-    bundle = {"public": read(ROOT / f"data/inputs/{case}.json"),
-              "problem": read(ROOT / f"data/problems/{case}.json"),
-              "answer": read(ROOT / "data/references/answers.json")[case]}
+    supplied = public is not None or problem is not None
+    bundle = {"public": deepcopy(public) if public is not None else read(ROOT / f"data/inputs/{case}.json"),
+              "problem": receive_problem(problem if problem is not None else read(ROOT / f"data/problems/{case}.json")),
+              "answer": read(ROOT / "data/references/answers.json").get(case)}
+    if supplied:
+        bundle["answer"] = {"status": "not_evaluated", "objective_value": None, "human_review": "pending"}
+    if answer is not None:
+        bundle["answer"] = deepcopy(answer)
     methods = [m for m in config("methods")["methods"] if m["method_id"] in applicable(bundle["problem"])]
     bundle["materials"] = {"method_knowledge": methods,
                            "algorithm_skeletons": [m["skeleton_id"] for m in methods],
                            "tool_contracts": [context(m["method_id"], bundle["problem"]["problem_type"]) for m in methods]}
-    unified, operations = map_fields(bundle)
-    validate_problem(unified["problem"])
-    return {"id": case, "version": "task2-handoff-1.0", "unified": unified,
+    # Missing scalar fields remain absent; mapping annotations do not invent values.
+    mapping = config("mappings")
+    for item in mapping["fields"]:
+        if item["source"].startswith("problem."):
+            try:
+                at_path(bundle, item["source"])
+            except KeyError:
+                item["required"] = False
+    unified, operations = map_fields(bundle, mapping)
+    validate_partial(unified["problem"])
+    result = {"id": case, "version": "task2-handoff-1.3", "unified": unified,
             "scenario": {"domain": "public_civilian_teaching", "time_urgency": None,
                          "evidence": "Public statement and explicit demo modeling notes only"},
             "process": operations,
@@ -130,6 +152,15 @@ def archive(case):
                              "task_text": "public.description_en (verbatim from local attributed input)",
                              "problem": "existing curated data/problems; source alignment pending human review",
                              "reference_result": "independent certificate in data/references/answers.json"}}}
+    if not supplied:
+        from .evidence import field_evidence
+        result["evidence"]["field_evidence"] = field_evidence(case, bundle["public"])
+    else:
+        result["evidence"]["field_evidence"] = {}
+        result["evidence"]["field_provenance"]["reference_result"] = "No reference certificate for overridden handoff"
+        if answer is not None:
+            result["evidence"]["field_provenance"]["reference_result"] = "Explicit independently checked certificate; human review pending"
+    return result
 
 
 def instantiate(record, form, actual_return=None, problem=None, method_id=None):
@@ -137,8 +168,14 @@ def instantiate(record, form, actual_return=None, problem=None, method_id=None):
     definition = spec["templates"][form]
     u = record["unified"]
     p = deepcopy(problem if problem is not None else u["problem"])
+    validate_partial(p)
     allowed = applicable(p)
-    selected = method_id or allowed[0]
+    selected = method_id or (allowed[0] if allowed else None)
+    missing = p["missing_information"]
+    if form != "understanding" and not missing and selected is None:
+        raise ValidationError("No registered method for this complete problem; only understanding is available")
+    if method_id and not missing and method_id not in allowed:
+        raise ValidationError("Selected method not applicable")
     # Only the empty shape goes to the model; numerical schema bounds remain in validators.
     parameters = ({"tasks": [], "cost_matrix": []} if p["problem_type"] == "assignment" else
                   {"objective_coefficients": [], "constraints": [], "lower_bounds": [],
@@ -150,22 +187,26 @@ def instantiate(record, form, actual_return=None, problem=None, method_id=None):
                           "objective: minimize or maximize; entities are identifier strings.",
                           "Assignment: tasks are identifiers; cost_matrix rows follow entities and columns follow tasks.",
                           "Linear: each constraint is {name: string, coefficients: number array, sense: <= or >= or =, rhs: number, unit: string}.",
-                          "Linear: all vectors follow entities; use null for an absent upper bound; variable_type is integer or continuous."]}
+                          "Linear: all vectors follow entities; use null for an explicitly unbounded upper bound, not for an unknown bound; variable_type follows explicit statement/supplement requirements: integer or continuous. Never guess integer from an object name."]}
+    contract["rules"].append("If the statement does not supply a required field, omit that field and list its sorted full path in missing_information (for example parameters.cost_matrix). Never invent zero or placeholder arrays. A given field must not be marked missing.")
     values = {"task_text": u["task_text"], "supplement": u["supplement"],
               "entity_order": u["entity_order"], "field_contract": contract,
               "problem": p, "scenario": record["scenario"],
-              "requirements": {"objective": p["objective"], "need": "exact optimum or explicit termination status"},
-              "candidates": [{k: deepcopy(m[k]) for k in ("method_id", "version", "name", "condition_ids", "conditions")}
+              "requirements": {"objective": p.get("objective"), "need": "exact optimum or explicit termination status"},
+              "candidates": [{k: deepcopy(m[k]) for k in ("method_id", "version", "name", "condition_ids", "conditions",
+                                                       "initialization", "core_operation", "constraint_handling", "stopping", "output")}
                              for m in config("methods")["methods"] if m["method_id"] in allowed],
-              "selected_method": selected, "context": context(selected, p["problem_type"]),
+              "selected_method": selected, "context": context(selected, p["problem_type"]) if selected and not missing else None,
               "actual_return": actual_return, "status_definitions": STATUS_ACTIONS}
     if form == "result" and actual_return is None:
         raise ValidationError("Result template needs an actual solver return")
+    if form == "result" and missing:
+        raise ValidationError("Incomplete problem cannot instantiate result interpretation")
     targets = {"understanding": p,
-               "method": {"accepted_method_ids": allowed, "example": {
-                   "method_id": selected, "condition_ids": context(selected, p["problem_type"])["method"]["condition_ids"],
+               "method": {"accepted_method_ids": allowed, "example": {"missing_fields": missing} if missing else {
+                   "method_id": selected, "condition_ids": context(selected, p["problem_type"])["method"]["condition_ids"] if selected else [],
                    "explanation": "Applicable to the supplied model; alternatives are also accepted."}},
-               "call": fixture_call(p, selected),
+               "call": {"missing_fields": missing} if missing else (fixture_call(p, selected) if selected else None),
                "result": interpretation(actual_return) if actual_return else None}
     return {"id": record["id"] + ":" + form, "case_id": record["id"], "form": form,
             "category": definition["category"], "version": spec["version"],

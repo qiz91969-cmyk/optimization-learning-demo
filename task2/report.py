@@ -60,7 +60,8 @@ def render(results, directory):
         lines.append("串联流程尚未运行。")
     repairs = sum(r["feedback_repaired"] for r in runs)
     lines += [f"独立视图中，同一次运行反馈后通过：{repairs}。这与修改提示后另起运行不同；不能据此声称普遍提升。"]
-    successful_call = next((r for r in runs if r["form"] == "call" and r["final_correct"]), None)
+    successful_call = next((r for r in runs if r["form"] == "call" and r["final_correct"]
+                            and "solver_result" in r["attempts"][-1]), None)
     if successful_call:
         attempt = successful_call["attempts"][-1]
         call, actual = attempt["output"], attempt["solver_result"]

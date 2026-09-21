@@ -9,6 +9,8 @@ from demo.validation import (ValidationError, parse_model_output, validate_probl
                              object_schema, array, TEXT, NUMBER, _schema)
 from .core import STATUS_ACTIONS, applicable, context, messages
 from .tools import call_problem, solve
+from .handoff import validate_partial
+from .diagnostics import field_checks, problem_matches
 
 METHOD_SCHEMA = object_schema({"method_id": TEXT, "condition_ids": array(TEXT),
                                "explanation": {"type": "string", "minLength": 1, "maxLength": 2000}})
@@ -22,19 +24,22 @@ RESULT_SCHEMA = object_schema({
 
 
 def same_problem(candidate, supplied):
-    return (aligned(candidate, supplied) and candidate["units"] == supplied["units"] and
-            candidate["missing_information"] == supplied["missing_information"])
+    return problem_matches(candidate, supplied)
 
 
 def check_online(view, output):
     """Never read roles.target/evidence, references or expected optimal values."""
     form, inputs = view["form"], view["roles"]["input"]
     if form == "understanding":
-        validate_problem(output)
-        if output["entities"] != inputs["entity_order"]:
+        validate_partial(output)
+        if "entities" in output and output["entities"] != inputs["entity_order"]:
             raise ValidationError("Preserve supplied entity_order")
         return {"state": "needs_information" if output["missing_information"] else "validated"}
     if form == "method":
+        if inputs["problem"]["missing_information"]:
+            if set(output) != {"missing_fields"} or output["missing_fields"] != inputs["problem"]["missing_information"]:
+                raise ValidationError("Return missing_fields; do not guess a method for incomplete input")
+            return {"state": "needs_information"}
         _schema(output, METHOD_SCHEMA)
         candidates = {x["method_id"]: x for x in inputs["candidates"]}
         if output["method_id"] not in candidates or output["method_id"] not in applicable(inputs["problem"]):
@@ -78,16 +83,29 @@ def check_online(view, output):
 
 def grade(view, attempt, record):
     """Offline evaluation is not supplied to the model's feedback loop."""
-    if not attempt.get("online_pass"):
-        return {"correct": False, "reason": "online_check_failed", "human_review": "pending"}
-    output, form = attempt["output"], view["form"]
+    output, form = attempt.get("output"), view["form"]
     p = record["unified"]["problem"]
     answer = record["unified"]["reference_result"]
+    details = []
+    if form == "understanding" and isinstance(output, dict):
+        try:
+            details = field_checks(output, p, record["evidence"].get("field_evidence", {}))
+        except (TypeError, ValueError, KeyError, OverflowError):
+            details = [{"path": "$", "status": "fail", "reason": "malformed_problem; see online error"}]
+    if not attempt.get("online_pass"):
+        return {"correct": False, "reason": "online_check_failed", "human_review": "pending", "field_checks": details}
     if form == "understanding":
         okay = same_problem(output, p)
         return {"correct": okay, "reason": "conservative_reference_alignment",
                 "source_correspondence": "curated_reference; field-level human review pending",
-                "unit_limitation": "labels checked; dimensional conversion not proven", "human_review": "pending"}
+                "unit_limitation": "labels checked; dimensional conversion not proven", "human_review": "pending",
+                "field_checks": details, "review_required": any(x["status"] == "review_required" for x in details)}
+    if form in ("method", "call") and p["missing_information"]:
+        return {"correct": output == {"missing_fields": p["missing_information"]},
+                "reason": "missing_request; no_tool_execution", "human_review": "pending",
+                "field_checks": [{"path": "missing_fields", "actual": output.get("missing_fields"),
+                                  "expected": p["missing_information"],
+                                  "status": "pass" if output == {"missing_fields": p["missing_information"]} else "fail"}]}
     if form == "method":
         okay = output["method_id"] in applicable(p)
         return {"correct": okay, "reason": "method_and_condition_ids; prose not automatically certified",
@@ -96,7 +114,8 @@ def grade(view, attempt, record):
         if "solver_result" not in attempt:
             return {"correct": bool(p["missing_information"]), "reason": "no_execution", "human_review": "pending"}
         result = evaluate_attempt({"problem": call_problem(output), "solver_result": attempt["solver_result"]}, p, answer)
-        return {**result, "correct": result["verified_against_reference"]}
+        return {**result, "correct": result["verified_against_reference"],
+                "field_checks": field_checks(call_problem(output), p, record["evidence"].get("field_evidence", {}))}
     # Independent result views use an actual fixture execution; still check its origin against the reference.
     result = evaluate_attempt({"problem": view["roles"]["input"]["problem"],
                                "solver_result": view["roles"]["input"]["actual_return"]}, p, answer)

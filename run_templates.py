@@ -72,6 +72,7 @@ def main():
                "template_version": payload["views"][0]["version"],
                "validation": checks, "fixtures": payload["fixtures"], "faults": fault_checks(payload),
                "config_hashes": payload["config_hashes"], "runs": [], "chain": None}
+    results["unavailable_views"] = payload.get("unavailable_views", [])
     records = {r["id"]: r for r in payload["records"]}
     if args.backend == "ollama":
         try:

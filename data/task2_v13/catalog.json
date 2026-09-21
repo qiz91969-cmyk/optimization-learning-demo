@@ -1,0 +1,97 @@
+{
+  "version": "1.3",
+  "usage": "development_candidates_not_independent_benchmark",
+  "human_review": "pending",
+  "source_review": {
+    "reviewed_at": "2026-09-21",
+    "optimus": {"url": "https://github.com/teshnizi/OptiMUS", "use": "Workflow and execution-feedback reference only; no code or dataset copied", "note": "Repository distinguishes v0.1/v0.2/v0.3; linked NLP4LP has CC BY-NC 4.0 research restrictions and is not imported"},
+    "paper": {"url": "https://arxiv.org/abs/2310.06116v2", "use": "Separation of description, formulation, execution and verification; not a separate source of downloaded cases"},
+    "nl4opt2022": {"url": "https://nl4opt.github.io/", "data_url": "https://github.com/nl4opt/nl4opt-competition/blob/49f1e0d66b7fdcd33305a7f281c2a7c13f5620ea/generation_data/test.jsonl", "revision": "49f1e0d66b7fdcd33305a7f281c2a7c13f5620ea", "license": "MIT; copyright 2022 Huawei Technologies; notice retained in THIRD_PARTY_NOTICES.md", "use": "Four additional attributed problem descriptions; structured references are separately curated"},
+    "nl4opt2024": {"url": "https://nl4opt.github.io/neurips-2024/starterkit/", "data_url": "https://github.com/nl4opt/nl4opt-competition-v2", "access": "404 at review", "use": "LP/MIP distinction and robustness evaluation reference only; zero imported records"},
+    "synthetic": {"use": "Original civilian educational problems with invented entities and numbers", "privacy": "Only generic resource/task allocation concepts; no private text, actual entities, parameters, locations, or operational requirements retained"}
+  },
+  "handoff_requirements": {
+    "understanding": ["description_en", "modeling_notes_en", "entity_order", "empty_field_contract"],
+    "method": ["curated_problem", "requirements", "candidate_method_cards"],
+    "call": ["curated_problem", "selected_method", "tool_interface"],
+    "result": ["curated_problem", "real_solver_return", "status_definitions"]
+  },
+  "questions": [
+    {
+      "id": "glass", "group": "production", "title": "玻璃生产的双设备工时", "origin": "public_verbatim_with_explicit_supplement", "source_key": "nl4opt2022", "source_id": "1751406188",
+      "description_en": "A glass factory makes two types of glass panes: a regular glass pane and a tempered glass pane. Both require time on a heating and cooling machine. Both machines are available for a maximum of 300 minutes per day. It takes 3 minutes in the heating machine and 5 minutes in the cooling machine to make one regular glass pane. It takes 5 minutes in the heating machine and 8 minutes in the cooling machine to make one tempered glass pane. The profit per pane of regular glass is $8 and the profit per pane of tempered glass is $10. How many panes of each glass type should the factory make to maximize profit? What is the maximum profit?",
+      "description_zh": "普通玻璃每片占加热3分钟、冷却5分钟，利润8元；钢化玻璃分别占5分钟、8分钟，利润10元。两台设备每天各有300分钟，求利润最大的生产量。",
+      "modeling_notes_en": "Explicit demo supplement: daily pane counts are nonnegative integers (the source LP annotation is not an integer guarantee). There are no separate product upper limits; represent these as null. Use quantity unit panes, objective unit dollars, and minutes for both machine constraints.",
+      "entity_order": ["regular", "tempered"], "forms": ["understanding", "method", "call", "result"], "verification": "independent_enumeration", "focus": "Two resource rows with different coefficients and units; explicit integer supplement"
+    },
+    {
+      "id": "lamps", "group": "production", "title": "灯具生产的最低订单与产能", "origin": "public_verbatim", "source_key": "nl4opt2022", "source_id": "741805703",
+      "description_en": "A lighting company makes desk-lamps and night-lamps. There is an expected demand of at least 30 desk-lamps and 50 night-lamps each day. However, due to the size of their factory, they can make at most 150 desk-lamps and 180 night-lamps per day. To satisfy a contract, a minimum of 100 lamps must be made each day. If the profit per desk-lamp sold is $5 and the profit per night-lamp sold is $8, how many lamps of each type should be made to maximize profit?",
+      "description_zh": "台灯至少30盏、至多150盏，夜灯至少50盏、至多180盏，总产量至少100盏，单位利润分别5和8。求最大利润。",
+      "forms": ["understanding", "method", "call", "result"], "verification": "candidate_only", "focus": "Distinguish product bounds from total minimum; variable-type convention still needs explicit curation"
+    },
+    {
+      "id": "feed", "group": "production", "title": "连续配料的营养下限", "origin": "public_verbatim", "source_key": "nl4opt2022", "source_id": "703345038",
+      "description_en": "A farmer wants to mix his animal feeds, Feed A and Feed B, in such a way that the mixture will contain a minimum of 30 units of protein and 50 units of fat. Feed A costs $100 per kilogram and contains 10 units of protein and 8 units of fat. Feed B costs $80 per kilogram and contains 7 units of protein and 15 units of fat. Determine the minimum cost of the mixture.",
+      "description_zh": "A、B饲料每千克价格100、80，蛋白质含量10、7，脂肪含量8、15；混合后蛋白质至少30、脂肪至少50，求最低成本，质量允许小数。",
+      "forms": ["understanding"], "verification": "candidate_only", "focus": "Continuous quantities; current task-two method/tool registry does not cover continuous LP execution; do not relabel integer"
+    },
+    {
+      "id": "paint_missing", "group": "production", "title": "缺少原料供应量的颜料生产", "origin": "synthetic", "source_key": "synthetic",
+      "description_en": "A studio makes whole batches of red and blue paint. Each red batch uses 2 kg of base and each blue batch uses 3 kg. Profits are 4 and 7 dollars per batch. Maximize profit. The available base quantity is unknown; no separate product upper limits are imposed. Request the missing capacity before constructing a solver call.",
+      "description_zh": "红、蓝颜料整批生产，每批消耗基料2、3千克，利润4、7元；总基料供应量未给出。识别缺失，不能编造产能。",
+      "forms": ["understanding", "method", "call"], "verification": "candidate_only", "focus": "Nested constraint rhs absence; current partial schema only handles required field paths at supported levels, so adapter extension is pending"
+    },
+    {
+      "id": "library_assignment", "group": "assignment", "title": "四名志愿者承担三项图书馆工作", "origin": "synthetic", "source_key": "synthetic",
+      "description_en": "A library assigns tasks catalog, shelve, and desk to volunteers Ada, Bo, Cy, and Di. Every task must be assigned exactly once and each volunteer can take at most one task; one volunteer may remain idle. Costs in dollars, in task order catalog/shelve/desk, are Ada [9,2,7], Bo [6,4,3], Cy [5,8,1], Di [7,6,9]. Minimize total cost.",
+      "description_zh": "四名志愿者分配三项工作，每项恰好一人、每人至多一项，允许一人空闲。费用矩阵依次为[9,2,7]、[6,4,3]、[5,8,1]、[7,6,9]，求最低成本。",
+      "modeling_notes_en": "Use problem_type assignment, quantity unit assignments and objective unit dollars. Tasks in order: catalog, shelve, desk. Costs are not durations. No additional eligibility constraints.",
+      "entity_order": ["Ada", "Bo", "Cy", "Di"], "forms": ["understanding", "method", "call", "result"], "verification": "independent_permutation_enumeration", "focus": "Rectangular assignment, idle worker, JV and MILP both admissible"
+    },
+    {
+      "id": "assignment_ties", "group": "assignment", "title": "存在多个最优分配的社区值班", "origin": "synthetic", "source_key": "synthetic",
+      "description_en": "Three volunteers A,B,C each take exactly one of three desks X,Y,Z, with each desk staffed once. Costs in dollars are [2,2,8], [2,2,8], [8,8,1] in that order. Minimize total cost. Accept different assignments with the same verified optimum; do not require a fixed output array.",
+      "description_zh": "三人三岗，费用矩阵[2,2,8]、[2,2,8]、[8,8,1]。多个方案可同样最优，不能按数组逐项相等评分。",
+      "forms": ["understanding", "method", "call", "result"], "verification": "candidate_only", "focus": "Multiple legal methods and multiple optimal solutions"
+    },
+    {
+      "id": "assignment_order", "group": "assignment", "title": "行列顺序改变后的清洁任务分配", "origin": "synthetic", "source_key": "synthetic",
+      "description_en": "Assign jobs hall and stairs once each to workers C,A,B, each taking at most one job. Costs in dollars in this order are [3,6], [7,2], [4,5]. A second representation orders workers A,B,C and jobs stairs,hall with matrix [2,7], [5,4], [6,3]. Verify both represent the same assignment problem.",
+      "description_zh": "三人两项清洁任务，同时改变人员行顺序和工作列顺序，检查矩阵是否同步变换，不能只换名称。",
+      "forms": ["understanding", "method", "call", "result"], "verification": "candidate_only", "focus": "Entity-and-matrix synchronized row and column permutation"
+    },
+    {
+      "id": "repair_missing", "group": "assignment", "title": "维修任务未提供费用矩阵", "origin": "synthetic", "source_key": "synthetic",
+      "description_en": "Assign jobs lighting and shelving to workers Mei, Tao, and Wen. Each job must be assigned exactly once, each worker may take at most one job, and the objective is minimum cost in dollars. No worker-job costs have been supplied. Do not invent a matrix or solve the assignment; identify the missing cost information.",
+      "description_zh": "三名工作人员承担照明和书架两项维修，每项一人、每人至多一项，目标最低费用，但完全没有提供费用矩阵。应请求补充，不执行求解。",
+      "modeling_notes_en": "Use assignment; quantity unit assignments, objective unit dollars. Tasks in order lighting, shelving. Missing required data must be omitted and recorded by full field path.",
+      "entity_order": ["Mei", "Tao", "Wen"], "forms": ["understanding", "method", "call"], "verification": "missing_field_contract", "focus": "True missing cost matrix, no method guess or fabricated tool return"
+    },
+    {
+      "id": "accountants", "group": "budget", "title": "人员配置的工资预算与比例", "origin": "public_verbatim", "source_key": "nl4opt2022", "source_id": "-1394927728",
+      "description_en": "An accounting firm has senior accountants earning $3000 per week and junior accountants earning $1000 per week. The contracts with companies to provide accounting services require at least 100 accountants, of whom at least 5 must be senior accountants. To make sure there is enough experience on the accounting team, the number of senior accountants should be at least a third of the number to junior accountants. The firm wants to keep the weekly wage bill below $150000. Formulate an LP to minimize the wage bill.",
+      "description_zh": "资深、初级会计周薪3000、1000，总人数至少100，资深至少5且不少于初级的三分之一，工资预算150000以内。最小化工资。",
+      "forms": ["understanding", "method", "call", "result"], "verification": "candidate_only", "focus": "LP versus integer supplement and below versus <= source annotation need review before use"
+    },
+    {
+      "id": "school_procurement", "group": "budget", "title": "校园物资采购的数量上下限", "origin": "synthetic", "source_key": "synthetic",
+      "description_en": "Buy integer quantities of basic and deluxe classroom kits. Costs are 20 and 35 dollars, learning points are 3 and 5 per kit. Buy at least 2 basic kits and 1 deluxe kit, at most 8 of each, with a budget of 200 dollars. Maximize total learning points.",
+      "description_zh": "基础包和增强包价格20、35，效益3、5，至少购买2、1套、各至多8套，预算200。求最大效益。",
+      "forms": ["understanding", "method", "call", "result"], "verification": "candidate_only", "focus": "Quantity bounds and monetary budget must retain distinct units"
+    },
+    {
+      "id": "book_budget", "group": "budget", "title": "图书采购最低要求与预算冲突", "origin": "synthetic", "source_key": "synthetic",
+      "description_en": "A library buys whole standard and extended book bundles. Each costs 30 and 50 dollars and provides 6 and 9 benefit points respectively. Buy at least 3 standard and 4 extended bundles, with no separate upper bounds. The total budget is at most 250 dollars. Also require at least 12 reading units, with 2 units per standard bundle and 1 per extended bundle. Maximize benefit while keeping every constraint; report infeasible if no plan exists.",
+      "description_zh": "普通和扩展书包价格30、50、效益6、9，至少购买3和4包，预算250；普通、扩展包分别提供2和1个阅读单位，总数至少12。保留所有条件，识别预算冲突。",
+      "modeling_notes_en": "Use nonnegative integer bundle counts; quantity unit bundles and objective unit points. Budget constraint unit dollars; reading requirement unit reading_units. Explicitly no separate upper bounds (null).",
+      "entity_order": ["standard", "extended"], "forms": ["understanding", "method", "call", "result"], "verification": "minimum_cost_infeasibility_certificate", "focus": "Coupled reading requirement plus contradictory monetary budget; no solution fabrication"
+    },
+    {
+      "id": "budget_equivalence", "group": "budget", "title": "采购约束的等价改写与单位", "origin": "synthetic", "source_key": "synthetic",
+      "description_en": "Buy integer packs X and Y with benefit 5 and 7 points each. Require X>=2, Y>=1 and X<=6. Budget: 10X+20Y<=100 dollars. Maximize benefit. Test the equivalent budget 2X+4Y<=20 dollars, and move X<=6 from upper_bounds to a constraint with unit packs. Do not change the budget unit to packs.",
+      "description_zh": "两种物资效益5、7，X至少2且至多6、Y至少1，费用10X+20Y不超过100。等比例改写预算或把上限移到约束中仍应一致，但预算不能标成数量单位。",
+      "forms": ["understanding", "method", "call", "result"], "verification": "candidate_only", "focus": "Positive scaling is algebraic, not a physical unit conversion; bound relocation"
+    }
+  ]
+}

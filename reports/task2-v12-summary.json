@@ -1,0 +1,753 @@
+{
+  "template_version": "1.2",
+  "model": "Qwen2.5-0.5B-Instruct",
+  "purpose": "development_template_validation_not_unseen_test",
+  "comparison_limit": "Template, knowledge input and checker changed; not a controlled same-input model comparison",
+  "sources": [
+    {
+      "file": "outputs/task2_v11/results.json",
+      "sha256": "03c4611666fa4a393bdc1455b0ea0e48d911d550339e4a17b87597d5b1d846c5"
+    },
+    {
+      "file": "outputs/task2_v12_local/results.json",
+      "sha256": "a82e9094a36451836182e585e8e37b1792c8616bf90304221c95a390fac2a402"
+    },
+    {
+      "file": "outputs/task2_v12_boundaries/results.json",
+      "sha256": "9c04504745ff4f782090beb20e346b2d6cde086ee4200622920f9f602acb0864"
+    }
+  ],
+  "tests": {
+    "tests": 177,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "previous_v11": {
+    "views": 16,
+    "first_correct": 6,
+    "final_correct": 6,
+    "feedback_repaired": 0,
+    "attempts": 36,
+    "elapsed_seconds": 328.529,
+    "first_raw_json": 9,
+    "first_online_pass": 6,
+    "tool_executions": 1,
+    "chain_passed": false
+  },
+  "base_v12": {
+    "views": 16,
+    "first_correct": 7,
+    "final_correct": 7,
+    "feedback_repaired": 0,
+    "attempts": 34,
+    "elapsed_seconds": 301.756,
+    "first_raw_json": 6,
+    "first_online_pass": 7,
+    "tool_executions": 2,
+    "chain_passed": false
+  },
+  "instance_checks_passed": true,
+  "base_views": [
+    {
+      "view_id": "assignment:understanding",
+      "case_id": "assignment",
+      "form": "understanding",
+      "first_correct": false,
+      "final_correct": false,
+      "feedback_repaired": false,
+      "attempts": 3,
+      "final_online_pass": false,
+      "tool_executed": false,
+      "checks": [
+        {
+          "path": "problem_type",
+          "status": "fail",
+          "reason": "field_mismatch"
+        },
+        {
+          "path": "entities",
+          "status": "fail",
+          "reason": "field_mismatch"
+        },
+        {
+          "path": "objective",
+          "status": "pass",
+          "reason": "matches_reference"
+        },
+        {
+          "path": "units",
+          "status": "fail",
+          "reason": "field_mismatch"
+        },
+        {
+          "path": "missing_information",
+          "status": "pass",
+          "reason": "matches_reference"
+        },
+        {
+          "path": "parameters.cost_matrix",
+          "status": "fail",
+          "reason": "field_mismatch"
+        },
+        {
+          "path": "parameters.routes",
+          "status": "fail",
+          "reason": "field_mismatch"
+        },
+        {
+          "path": "parameters.tasks",
+          "status": "fail",
+          "reason": "field_mismatch"
+        }
+      ],
+      "reason": "online_check_failed",
+      "human_review": "pending"
+    },
+    {
+      "view_id": "assignment:method",
+      "case_id": "assignment",
+      "form": "method",
+      "first_correct": true,
+      "final_correct": true,
+      "feedback_repaired": false,
+      "attempts": 1,
+      "final_online_pass": true,
+      "tool_executed": false,
+      "checks": [],
+      "reason": "method_and_condition_ids; prose not automatically certified",
+      "human_review": "pending"
+    },
+    {
+      "view_id": "assignment:call",
+      "case_id": "assignment",
+      "form": "call",
+      "first_correct": true,
+      "final_correct": true,
+      "feedback_repaired": false,
+      "attempts": 1,
+      "final_online_pass": true,
+      "tool_executed": true,
+      "checks": [
+        {
+          "path": "problem_type",
+          "status": "pass",
+          "reason": "matches_reference"
+        },
+        {
+          "path": "entities",
+          "status": "pass",
+          "reason": "matches_reference"
+        },
+        {
+          "path": "objective",
+          "status": "pass",
+          "reason": "matches_reference"
+        },
+        {
+          "path": "units",
+          "status": "pass",
+          "reason": "matches_reference"
+        },
+        {
+          "path": "missing_information",
+          "status": "pass",
+          "reason": "matches_reference"
+        },
+        {
+          "path": "parameters.cost_matrix",
+          "status": "pass",
+          "reason": "matches_reference"
+        },
+        {
+          "path": "parameters.tasks",
+          "status": "pass",
+          "reason": "matches_reference"
+        }
+      ],
+      "reason": "independent_result_check",
+      "human_review": "pending"
+    },
+    {
+      "view_id": "assignment:result",
+      "case_id": "assignment",
+      "form": "result",
+      "first_correct": false,
+      "final_correct": false,
+      "feedback_repaired": false,
+      "attempts": 3,
+      "final_online_pass": false,
+      "tool_executed": false,
+      "checks": [],
+      "reason": "online_check_failed",
+      "human_review": "pending"
+    },
+    {
+      "view_id": "printers:understanding",
+      "case_id": "printers",
+      "form": "understanding",
+      "first_correct": false,
+      "final_correct": false,
+      "feedback_repaired": false,
+      "attempts": 3,
+      "final_online_pass": false,
+      "tool_executed": false,
+      "checks": [
+        {
+          "path": "problem_type",
+          "status": "fail",
+          "reason": "field_mismatch"
+        },
+        {
+          "path": "entities",
+          "status": "fail",
+          "reason": "field_mismatch"
+        },
+        {
+          "path": "objective",
+          "status": "fail",
+          "reason": "field_mismatch"
+        },
+        {
+          "path": "units",
+          "status": "fail",
+          "reason": "field_mismatch"
+        },
+        {
+          "path": "missing_information",
+          "status": "fail",
+          "reason": "extraction_omission_or_invented_missing_marker"
+        },
+        {
+          "path": "parameters.objective_coefficients",
+          "status": "fail",
+          "reason": "field_mismatch"
+        },
+        {
+          "path": "parameters.variable_type",
+          "status": "fail",
+          "reason": "field_mismatch"
+        },
+        {
+          "path": "parameters.constraints",
+          "status": "review_required",
+          "reason": "not_equivalent_under_supported_rules; manual_review_required"
+        },
+        {
+          "path": "parameters.constraints",
+          "status": "fail",
+          "reason": "field_mismatch"
+        },
+        {
+          "path": "parameters.lower_bounds",
+          "status": "fail",
+          "reason": "field_mismatch"
+        },
+        {
+          "path": "parameters.upper_bounds",
+          "status": "fail",
+          "reason": "field_mismatch"
+        }
+      ],
+      "reason": "online_check_failed",
+      "human_review": "pending"
+    },
+    {
+      "view_id": "printers:method",
+      "case_id": "printers",
+      "form": "method",
+      "first_correct": true,
+      "final_correct": true,
+      "feedback_repaired": false,
+      "attempts": 1,
+      "final_online_pass": true,
+      "tool_executed": false,
+      "checks": [],
+      "reason": "method_and_condition_ids; prose not automatically certified",
+      "human_review": "pending"
+    },
+    {
+      "view_id": "printers:call",
+      "case_id": "printers",
+      "form": "call",
+      "first_correct": true,
+      "final_correct": true,
+      "feedback_repaired": false,
+      "attempts": 1,
+      "final_online_pass": true,
+      "tool_executed": true,
+      "checks": [
+        {
+          "path": "problem_type",
+          "status": "pass",
+          "reason": "matches_reference"
+        },
+        {
+          "path": "entities",
+          "status": "pass",
+          "reason": "matches_reference"
+        },
+        {
+          "path": "objective",
+          "status": "pass",
+          "reason": "matches_reference"
+        },
+        {
+          "path": "units",
+          "status": "pass",
+          "reason": "matches_reference"
+        },
+        {
+          "path": "missing_information",
+          "status": "pass",
+          "reason": "matches_reference"
+        },
+        {
+          "path": "parameters.objective_coefficients",
+          "status": "pass",
+          "reason": "matches_reference"
+        },
+        {
+          "path": "parameters.variable_type",
+          "status": "pass",
+          "reason": "matches_reference"
+        },
+        {
+          "path": "parameters.constraints",
+          "status": "pass",
+          "reason": "equivalent_under_registered_linear_rules"
+        },
+        {
+          "path": "parameters.constraints.unit",
+          "status": "pass",
+          "reason": "labels_only; no_unit_conversion_proof"
+        }
+      ],
+      "reason": "independent_result_check",
+      "human_review": "pending"
+    },
+    {
+      "view_id": "printers:result",
+      "case_id": "printers",
+      "form": "result",
+      "first_correct": false,
+      "final_correct": false,
+      "feedback_repaired": false,
+      "attempts": 3,
+      "final_online_pass": false,
+      "tool_executed": false,
+      "checks": [],
+      "reason": "online_check_failed",
+      "human_review": "pending"
+    },
+    {
+      "view_id": "bakery:understanding",
+      "case_id": "bakery",
+      "form": "understanding",
+      "first_correct": false,
+      "final_correct": false,
+      "feedback_repaired": false,
+      "attempts": 3,
+      "final_online_pass": false,
+      "tool_executed": false,
+      "checks": [
+        {
+          "path": "problem_type",
+          "status": "fail",
+          "reason": "field_mismatch"
+        },
+        {
+          "path": "entities",
+          "status": "fail",
+          "reason": "field_mismatch"
+        },
+        {
+          "path": "objective",
+          "status": "fail",
+          "reason": "field_mismatch"
+        },
+        {
+          "path": "units",
+          "status": "fail",
+          "reason": "field_mismatch"
+        },
+        {
+          "path": "missing_information",
+          "status": "fail",
+          "reason": "extraction_omission_or_invented_missing_marker"
+        },
+        {
+          "path": "parameters.objective_coefficients",
+          "status": "fail",
+          "reason": "field_mismatch"
+        },
+        {
+          "path": "parameters.variable_type",
+          "status": "fail",
+          "reason": "field_mismatch"
+        },
+        {
+          "path": "parameters.constraints",
+          "status": "fail",
+          "reason": "field_mismatch"
+        },
+        {
+          "path": "parameters.lower_bounds",
+          "status": "fail",
+          "reason": "field_mismatch"
+        },
+        {
+          "path": "parameters.upper_bounds",
+          "status": "fail",
+          "reason": "field_mismatch"
+        }
+      ],
+      "reason": "online_check_failed",
+      "human_review": "pending"
+    },
+    {
+      "view_id": "bakery:method",
+      "case_id": "bakery",
+      "form": "method",
+      "first_correct": true,
+      "final_correct": true,
+      "feedback_repaired": false,
+      "attempts": 1,
+      "final_online_pass": true,
+      "tool_executed": false,
+      "checks": [],
+      "reason": "method_and_condition_ids; prose not automatically certified",
+      "human_review": "pending"
+    },
+    {
+      "view_id": "bakery:call",
+      "case_id": "bakery",
+      "form": "call",
+      "first_correct": false,
+      "final_correct": false,
+      "feedback_repaired": false,
+      "attempts": 3,
+      "final_online_pass": false,
+      "tool_executed": false,
+      "checks": [],
+      "reason": "online_check_failed",
+      "human_review": "pending"
+    },
+    {
+      "view_id": "bakery:result",
+      "case_id": "bakery",
+      "form": "result",
+      "first_correct": false,
+      "final_correct": false,
+      "feedback_repaired": false,
+      "attempts": 3,
+      "final_online_pass": false,
+      "tool_executed": false,
+      "checks": [],
+      "reason": "online_check_failed",
+      "human_review": "pending"
+    },
+    {
+      "view_id": "advertising:understanding",
+      "case_id": "advertising",
+      "form": "understanding",
+      "first_correct": false,
+      "final_correct": false,
+      "feedback_repaired": false,
+      "attempts": 3,
+      "final_online_pass": false,
+      "tool_executed": false,
+      "checks": [
+        {
+          "path": "problem_type",
+          "status": "fail",
+          "reason": "field_mismatch"
+        },
+        {
+          "path": "entities",
+          "status": "fail",
+          "reason": "field_mismatch"
+        },
+        {
+          "path": "objective",
+          "status": "fail",
+          "reason": "field_mismatch"
+        },
+        {
+          "path": "units",
+          "status": "pass",
+          "reason": "matches_reference"
+        },
+        {
+          "path": "missing_information",
+          "status": "fail",
+          "reason": "extraction_omission_or_invented_missing_marker"
+        },
+        {
+          "path": "parameters.objective_coefficients",
+          "status": "fail",
+          "reason": "field_mismatch"
+        },
+        {
+          "path": "parameters.variable_type",
+          "status": "fail",
+          "reason": "field_mismatch"
+        },
+        {
+          "path": "parameters.constraints",
+          "status": "review_required",
+          "reason": "not_equivalent_under_supported_rules; manual_review_required"
+        },
+        {
+          "path": "parameters.constraints",
+          "status": "fail",
+          "reason": "field_mismatch"
+        },
+        {
+          "path": "parameters.lower_bounds",
+          "status": "fail",
+          "reason": "field_mismatch"
+        },
+        {
+          "path": "parameters.upper_bounds",
+          "status": "fail",
+          "reason": "field_mismatch"
+        }
+      ],
+      "reason": "online_check_failed",
+      "human_review": "pending"
+    },
+    {
+      "view_id": "advertising:method",
+      "case_id": "advertising",
+      "form": "method",
+      "first_correct": true,
+      "final_correct": true,
+      "feedback_repaired": false,
+      "attempts": 1,
+      "final_online_pass": true,
+      "tool_executed": false,
+      "checks": [],
+      "reason": "method_and_condition_ids; prose not automatically certified",
+      "human_review": "pending"
+    },
+    {
+      "view_id": "advertising:call",
+      "case_id": "advertising",
+      "form": "call",
+      "first_correct": false,
+      "final_correct": false,
+      "feedback_repaired": false,
+      "attempts": 3,
+      "final_online_pass": false,
+      "tool_executed": false,
+      "checks": [],
+      "reason": "online_check_failed",
+      "human_review": "pending"
+    },
+    {
+      "view_id": "advertising:result",
+      "case_id": "advertising",
+      "form": "result",
+      "first_correct": true,
+      "final_correct": true,
+      "feedback_repaired": false,
+      "attempts": 1,
+      "final_online_pass": true,
+      "tool_executed": false,
+      "checks": [],
+      "reason": "independent_result_check",
+      "human_review": "pending"
+    }
+  ],
+  "boundary_views": [
+    {
+      "view_id": "missing_matrix_understanding:understanding",
+      "case_id": "assignment",
+      "form": "understanding",
+      "first_correct": false,
+      "final_correct": false,
+      "feedback_repaired": false,
+      "attempts": 3,
+      "final_online_pass": false,
+      "tool_executed": false,
+      "checks": [
+        {
+          "path": "problem_type",
+          "status": "pass",
+          "reason": "matches_reference"
+        },
+        {
+          "path": "entities",
+          "status": "fail",
+          "reason": "field_mismatch"
+        },
+        {
+          "path": "objective",
+          "status": "pass",
+          "reason": "matches_reference"
+        },
+        {
+          "path": "units",
+          "status": "fail",
+          "reason": "field_mismatch"
+        },
+        {
+          "path": "missing_information",
+          "status": "fail",
+          "reason": "missing_fields_mismatch"
+        },
+        {
+          "path": "parameters.tasks",
+          "status": "fail",
+          "reason": "field_mismatch"
+        }
+      ],
+      "reason": "online_check_failed",
+      "human_review": "pending"
+    },
+    {
+      "view_id": "missing_matrix_call:call",
+      "case_id": "assignment",
+      "form": "call",
+      "first_correct": false,
+      "final_correct": false,
+      "feedback_repaired": false,
+      "attempts": 3,
+      "final_online_pass": false,
+      "tool_executed": false,
+      "checks": [],
+      "reason": "online_check_failed",
+      "human_review": "pending"
+    },
+    {
+      "view_id": "extraction_omission:understanding",
+      "case_id": "assignment",
+      "form": "understanding",
+      "first_correct": false,
+      "final_correct": false,
+      "feedback_repaired": false,
+      "attempts": 3,
+      "final_online_pass": false,
+      "tool_executed": false,
+      "checks": [
+        {
+          "path": "problem_type",
+          "status": "fail",
+          "reason": "field_mismatch"
+        },
+        {
+          "path": "entities",
+          "status": "fail",
+          "reason": "field_mismatch"
+        },
+        {
+          "path": "objective",
+          "status": "pass",
+          "reason": "matches_reference"
+        },
+        {
+          "path": "units",
+          "status": "fail",
+          "reason": "field_mismatch"
+        },
+        {
+          "path": "missing_information",
+          "status": "fail",
+          "reason": "extraction_omission_or_invented_missing_marker"
+        },
+        {
+          "path": "parameters.cost_matrix",
+          "status": "fail",
+          "reason": "field_mismatch"
+        },
+        {
+          "path": "parameters.handoff",
+          "status": "fail",
+          "reason": "field_mismatch"
+        },
+        {
+          "path": "parameters.route",
+          "status": "fail",
+          "reason": "field_mismatch"
+        },
+        {
+          "path": "parameters.tasks",
+          "status": "fail",
+          "reason": "field_mismatch"
+        }
+      ],
+      "reason": "online_check_failed",
+      "human_review": "pending"
+    },
+    {
+      "view_id": "multiple_legal_methods:method",
+      "case_id": "assignment",
+      "form": "method",
+      "first_correct": true,
+      "final_correct": true,
+      "feedback_repaired": false,
+      "attempts": 1,
+      "final_online_pass": true,
+      "tool_executed": false,
+      "checks": [],
+      "reason": "method_and_condition_ids; prose not automatically certified",
+      "human_review": "pending"
+    },
+    {
+      "view_id": "inapplicable_candidate:method",
+      "case_id": "printers",
+      "form": "method",
+      "first_correct": false,
+      "final_correct": false,
+      "feedback_repaired": false,
+      "attempts": 3,
+      "final_online_pass": false,
+      "tool_executed": false,
+      "checks": [],
+      "reason": "online_check_failed",
+      "human_review": "pending"
+    },
+    {
+      "view_id": "consistent_permutation:call",
+      "case_id": "assignment",
+      "form": "call",
+      "first_correct": false,
+      "final_correct": false,
+      "feedback_repaired": false,
+      "attempts": 3,
+      "final_online_pass": false,
+      "tool_executed": false,
+      "checks": [],
+      "reason": "online_check_failed",
+      "human_review": "pending"
+    }
+  ],
+  "boundary_target_checks": [
+    {
+      "name": "missing_matrix_understanding",
+      "target_interface_passed": true
+    },
+    {
+      "name": "missing_matrix_call",
+      "target_interface_passed": true
+    },
+    {
+      "name": "extraction_omission",
+      "target_interface_passed": true
+    },
+    {
+      "name": "multiple_legal_methods",
+      "target_interface_passed": true
+    },
+    {
+      "name": "inapplicable_candidate",
+      "target_interface_passed": true
+    },
+    {
+      "name": "consistent_permutation",
+      "target_interface_passed": true
+    }
+  ],
+  "review": "Reference evidence and explanations still pending human review"
+}

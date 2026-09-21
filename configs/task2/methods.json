@@ -1,26 +1,28 @@
 {
-  "version": "1.1",
-  "context_version": "1.1",
+  "version": "1.2",
+  "context_version": "1.2",
   "methods": [
     {
-      "method_id": "assignment_jv", "version": "1.0", "skeleton_id": "linear_assignment",
+      "method_id": "assignment_jv", "version": "1.1", "skeleton_id": "linear_assignment",
       "name": "SciPy rectangular linear assignment (modified Jonker-Volgenant)",
       "condition_ids": ["assignment_one_to_one", "finite_cost_matrix"],
       "conditions": "Minimize a finite rectangular cost matrix; each task exactly once, each worker at most once. Workers fewer than tasks means infeasible under this contract.",
       "initialization": "Finite matrix with explicit worker/task order",
       "core_operation": "scipy.optimize.linear_sum_assignment",
+      "constraint_handling": "Only one-to-one assignment constraints are supported; general linear resource constraints are not accepted by this tool.",
       "stopping": "Library completion or external process timeout",
       "output": "Row-major binary assignment, objective and termination status",
       "tool_version": "1.0", "tool_names": {"assignment": "solve_assignment_jv"},
       "source": "https://docs.scipy.org/doc/scipy-1.16.2/reference/generated/scipy.optimize.linear_sum_assignment.html"
     },
     {
-      "method_id": "highs_milp", "version": "1.0", "skeleton_id": "mixed_integer_linear_programming",
+      "method_id": "highs_milp", "version": "1.1", "skeleton_id": "mixed_integer_linear_programming",
       "name": "HiGHS mixed integer linear programming through SciPy",
       "condition_ids": ["linear_objective_constraints", "integer_decisions"],
       "conditions": "Linear objective and constraints, finite input coefficients, integer decisions; binary one-to-one assignment also has this formulation. Infeasibility does not make the method inapplicable.",
       "initialization": "Objective vector, constraint matrix, variable bounds and integrality",
       "core_operation": "scipy.optimize.milp (HiGHS)",
+      "constraint_handling": "Encode linear equalities/inequalities, variable bounds and integrality; only registered linear/assignment interfaces are available in this demo.",
       "stopping": "Optimality, infeasibility, unboundedness, ten-second solver limit or external timeout",
       "output": "Values if present and feasible, objective, termination status; feasible does not imply optimal",
       "tool_version": "1.0", "tool_names": {"assignment": "solve_assignment", "linear": "solve_linear"},
